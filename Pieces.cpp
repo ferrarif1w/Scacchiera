@@ -2,4 +2,7 @@
 
 Pieces::Pieces(){}
 
-Pieces::Pieces(pair<int, int> position){}
+Pieces::Pieces(pair<int, int> position)
+{
+    
+}
