@@ -9,11 +9,11 @@ class Pieces
 
     private:
         int Pos(pair<int, int> pos);
-        bool PrimaMossa = false;
+        bool primaMossa = false;
 
     public:
         Pieces();
-        Pieces(pair<int, int> position);
+        Pieces(pair<int, int> position, char color);
 
 };
 #endif
