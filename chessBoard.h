@@ -5,9 +5,11 @@ using namespace std;
 
 class ChessBoard {
     private:
+        //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
         const int SIZE = 8;
         bool checkBoundaries(pair<int, int> pos);
+        void initializeRow(int row); //aggiungere parametro player
     public:
         struct Move {
             Pieces* piece;
