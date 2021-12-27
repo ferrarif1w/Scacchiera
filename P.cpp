@@ -19,11 +19,6 @@ pair<int, int> P::GetPosition()
     return position;
 }
 
-void P::SetColor(char Col)
-{
-    Color = Col;
-}
-
 char P::GetColor()
 {
     return Color;

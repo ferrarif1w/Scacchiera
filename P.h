@@ -21,7 +21,6 @@ class P : Pieces
         void SetMove(pair<int, int> NewPosition);
         pair<int, int> GetPosition();
 
-        void SetColor(char col);
         char GetColor();
 
         void SetStatus(bool Mov);

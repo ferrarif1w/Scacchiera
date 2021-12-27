@@ -19,11 +19,6 @@ pair<int, int> R::GetPosition()
     return position;
 }
 
-void R::SetColor(char Col)
-{
-    Color = Col;
-}
-
 char R::GetColor()
 {
     return Color;

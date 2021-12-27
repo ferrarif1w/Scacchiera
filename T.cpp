@@ -19,11 +19,6 @@ pair<int, int> T::GetPosition()
     return position;
 }
 
-void T::SetColor(char Col)
-{
-    Color = Col;
-}
-
 char T::GetColor()
 {
     return Color;
