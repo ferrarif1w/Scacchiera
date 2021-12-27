@@ -10,22 +10,64 @@ class Pieces
 
         std::pair<int, int> position;
         char Color;
-        bool Moved;
-
+        int Moved;
+        char Name;
 
     public:
-
-        Pieces();
-        Pieces(std::pair<int, int> position, char color);
+        Pieces(std::pair<int, int> position, char color, char n);
 
         void SetMove(std::pair<int, int> NewPosition);
         std::pair<int, int> GetPosition();
 
         char GetColor();
+        char GetName();
 
-        void SetStatus(bool Mov);
-        bool GetStatus();
+        int GetStatus();
 
-        std::vector<std::pair<int, int>*> Pmove();
+
+        virtual std::vector<std::pair<int, int>*>& Pmove() = 0;
 };
+
+class A : Pieces
+{
+    public:
+        A(std::pair<int, int> position, char color);
+        std::vector<std::pair<int, int> *>& Pmove() override;
+};
+
+class C : Pieces
+{
+public:
+    C(std::pair<int, int> position, char color);
+    std::vector<std::pair<int, int> *>& Pmove() override;
+};
+
+class D : Pieces
+{
+public:
+    D(std::pair<int, int> position, char color);
+    std::vector<std::pair<int, int> *>& Pmove() override;
+};
+
+class P : Pieces
+{
+public:
+    P(std::pair<int, int> position, char color);
+    std::vector<std::pair<int, int> *>& Pmove() override;
+};
+
+class R : Pieces
+{
+public:
+    R(std::pair<int, int> position, char color);
+    std::vector<std::pair<int, int> *>& Pmove() override;
+};
+
+class T : Pieces
+{
+public:
+    T(std::pair<int, int> position, char color);
+    std::vector<std::pair<int, int> *>& Pmove() override;
+};
+
 #endif
