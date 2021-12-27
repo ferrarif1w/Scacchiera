@@ -5,23 +5,23 @@ bool ChessBoard::checkBoundaries(pair<int, int> pos) {
     return (pos.first >= 0 && pos.first < SIZE && pos.second >= 0 && pos.second < SIZE);
 }
 
-void ChessBoard::initializeRow(int row) {
-    /*if (row == 1 || row == 6) {   
+void ChessBoard::initializeRow(int row, char color) {
+    if (row == 1 || row == 6) {   
         for (int i = 0; i < 8; i++) {
-            board[1][i] = new P();
+            board[1][i] = new P(Pair(row, i), ); 
             board[6][i] = new P();
         }
     }
     else if (row == 0 || row == 7) {
-        board[0][0] = new T();
-        board[0][1] = new C();
-        board[0][2] = new A();
-        board[0][3] = new D();
-        board[0][4] = new R();
-        board[0][5] = new A();
-        board[0][6] = new C();
-        board[0][7] = new T();
-    }*/
+        board[row][0] = new T();
+        board[row][1] = new C();
+        board[row][2] = new A();
+        board[row][3] = new D();
+        board[row][4] = new R();
+        board[row][5] = new A();
+        board[row][6] = new C();
+        board[row][7] = new T();
+    }
 }
 
 ChessBoard::ChessBoard() {

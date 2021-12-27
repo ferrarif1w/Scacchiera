@@ -9,7 +9,7 @@ class ChessBoard {
         vector<vector<Pieces*>> board;
         const int SIZE = 8;
         bool checkBoundaries(pair<int, int> pos);
-        void initializeRow(int row); //aggiungere parametro player
+        void initializeRow(int row, char color);
     public:
         struct Move {
             Pieces* piece;

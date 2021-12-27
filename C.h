@@ -10,7 +10,7 @@ class C : Pieces
     private:
 
         pair<int, int> position;
-        char Color;
+        char Color; //che valori può avere Color?
         bool Moved;
 
     public:
