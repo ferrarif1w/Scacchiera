@@ -7,13 +7,10 @@ using namespace std;
 class Pieces
 {
 
-private:
-    int Pos(pair<int, int> pos);
-    bool PrimaMossa = false;
+    public:
 
-public:
-    Pieces();
-    Pieces(pair<int, int> position);
+        Pieces();
+        Pieces(pair<int, int> position, char color);
 
 };
 #endif
