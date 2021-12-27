@@ -1,6 +1,6 @@
 test.cpp
 test.exe
 headerTest.h
-classTest.h
+headerTest.cpp
 .vscode/launch.json
 .vscode/tasks.json
