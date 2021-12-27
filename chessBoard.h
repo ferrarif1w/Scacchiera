@@ -1,12 +1,15 @@
 #include <vector>
 #include <string>
+#include "Pieces.h"
 using namespace std;
 
 class ChessBoard {
     private:
+        //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
         const int SIZE = 8;
         bool checkBoundaries(pair<int, int> pos);
+        void initializeRow(int row, char color);
     public:
         struct Move {
             Pieces* piece;
