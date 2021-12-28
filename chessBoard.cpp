@@ -11,14 +11,19 @@ void ChessBoard::initializeRow(int row) {
     if (row == 0 || row == 1) color = 'N';
     else color = 'B';
     if (row == 1 || row == 6) {   
-        for (int i = 0; i < 8; i++) {
-            board[1][i] = new P(pair(row, i), color); 
-            board[6][i] = new P(pair(row, i), color);
+        for (int i = 0; i < SIZE; i++) {
+            Pieces* piece = new P(pair(row, i), color);
+            board[row][i] = piece;
+            piecesList.push_back(piece);
         }
     }
     else if (row == 0 || row == 7) {
-        board[row][0] = new T(pair(row, 0), color);
-        board[row][1] = new C(pair(row, 1), color);
+        Pieces* piece = new T(pair(row, 0), color);
+        board[row][0] = piece;
+        piecesList.push_back(piece);
+        piece = new C(pair(row, 1), color);
+        board[row][1] = piece;
+        piecesList.push_back(piece);
         board[row][2] = new A(pair(row, 2), color);
         board[row][3] = new D(pair(row, 3), color);
         board[row][4] = new R(pair(row, 4), color);
@@ -51,4 +56,12 @@ string ChessBoard::printBoard() {
     out += "\n";
     out += "  ABCDEFGH";
     return out;
+}
+
+vector<ChessBoard::Move*> ChessBoard::movesAvailable() {
+    vector<ChessBoard::Move*> moves;
+    for (int i = 0; i < SIZE*4; i++) {
+
+    }
+    return moves;
 }

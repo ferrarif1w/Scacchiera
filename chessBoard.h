@@ -10,6 +10,7 @@ class ChessBoard {
     private:
         //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
+        vector<Pieces*> piecesList;
         const int SIZE = 8;
         bool checkBoundaries(pair<int, int> pos);
         void initializeRow(int row);
@@ -17,7 +18,8 @@ class ChessBoard {
         struct Move {
             Pieces* piece;
             pair<int, int> destination;
-            string moveName = 0;
+            string moveName = "";
+            Pieces* eatenPiece = nullptr;
         };
         ChessBoard();
         vector<Move*> movesAvailable();
