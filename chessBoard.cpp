@@ -6,7 +6,10 @@ bool ChessBoard::checkBoundaries(pair<int, int> pos) {
     return (pos.first >= 0 && pos.first < SIZE && pos.second >= 0 && pos.second < SIZE);
 }
 
-void ChessBoard::initializeRow(int row, char color) {
+void ChessBoard::initializeRow(int row) {
+    char color;
+    if (row == 0 || row == 1) color = 'N';
+    else color = 'B';
     if (row == 1 || row == 6) {   
         for (int i = 0; i < 8; i++) {
             board[1][i] = new P(pair(row, i), color); 
@@ -28,17 +31,20 @@ void ChessBoard::initializeRow(int row, char color) {
 ChessBoard::ChessBoard() {
     for (int i = 0; i < 8; i++) board.push_back(vector<Pieces*>(8, nullptr));
     //inizializzare file
+    initializeRow(0);
+    initializeRow(1);
+    initializeRow(6);
+    initializeRow(7);
 }
 
 string ChessBoard::printBoard() {
     string out = "";
     for (int i = 7; i >= 0; i--) {
-        out += i+1;
+        out += to_string(i+1);
         out += " ";
         for (int j = 0; j < 8; j++) {
-            if (board[i][j] != nullptr) {
-                //ritornare lettera con metodo di Pieces
-            }
+            if (board[i][j] != nullptr) out += board[i][j]->GetName();
+            else out += " ";
         }
         out += "\n";
     }
