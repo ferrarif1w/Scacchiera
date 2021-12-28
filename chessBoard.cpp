@@ -1,35 +1,49 @@
 #include "chessBoard.h"
 #include "Pieces.h"
+#include <algorithm>
 using namespace std;
 
-bool ChessBoard::checkBoundaries(pair<int, int> pos) {
-    return (pos.first >= 0 && pos.first < SIZE && pos.second >= 0 && pos.second < SIZE);
+bool ChessBoard::scanBoundaries(pair<int, int>* pos) {
+    return (pos->first >= 0 && pos->first < SIZE && pos->second >= 0 && pos->second < SIZE);
+}
+
+bool ChessBoard::scanOccupied(pair<int, int>* pos) {
+    return board[pos->first][pos->second] != nullptr;
+}
+
+void ChessBoard::insertPiece(Pieces* piece, pair<int, int> pos) {
+    board[pos.first][pos.second] = piece;
+    piecesList.push_back(piece);
 }
 
 void ChessBoard::initializeRow(int row) {
     char color;
-    if (row == 0 || row == 1) color = 'N';
-    else color = 'B';
+    if (row == 0 || row == 1) color = 'B';
+    else color = 'N';
+    Pieces* piece;
     if (row == 1 || row == 6) {   
         for (int i = 0; i < SIZE; i++) {
-            Pieces* piece = new P(pair(row, i), color);
-            board[row][i] = piece;
-            piecesList.push_back(piece);
+            piece = new P(pair(row, i), color);
+            insertPiece(piece, pair(row, i));
         }
     }
     else if (row == 0 || row == 7) {
-        Pieces* piece = new T(pair(row, 0), color);
-        board[row][0] = piece;
-        piecesList.push_back(piece);
+        piece = new T(pair(row, 0), color);
+        insertPiece(piece, pair(row, 0));
         piece = new C(pair(row, 1), color);
-        board[row][1] = piece;
-        piecesList.push_back(piece);
-        board[row][2] = new A(pair(row, 2), color);
-        board[row][3] = new D(pair(row, 3), color);
-        board[row][4] = new R(pair(row, 4), color);
-        board[row][5] = new A(pair(row, 5), color);
-        board[row][6] = new C(pair(row, 6), color);
-        board[row][7] = new T(pair(row, 7), color);
+        insertPiece(piece, pair(row, 1));
+        piece = new A(pair(row, 2), color);
+        insertPiece(piece, pair(row, 2));
+        piece = new D(pair(row, 3), color);
+        insertPiece(piece, pair(row, 3));
+        piece = new R(pair(row, 4), color);
+        insertPiece(piece, pair(row, 4));
+        piece = new A(pair(row, 5), color);
+        insertPiece(piece, pair(row, 5));
+        piece = new C(pair(row, 6), color);
+        insertPiece(piece, pair(row, 6));
+        piece = new T(pair(row, 7), color);
+        insertPiece(piece, pair(row, 7));
     }
 }
 
@@ -61,7 +75,34 @@ string ChessBoard::printBoard() {
 vector<ChessBoard::Move*> ChessBoard::movesAvailable() {
     vector<ChessBoard::Move*> moves;
     for (int i = 0; i < SIZE*4; i++) {
-
+        Pieces* piece = piecesList[i];
+        vector<pair<int, int>*> pieceMoves = piece->Pmove();
+        for (int j = 0; j < pieceMoves.size(); j++) {
+            pair<int, int>* destination = pieceMoves[j];
+            Pieces* additionalPiece = nullptr;
+            int moveName = 0;
+            if (!scanBoundaries(destination)) continue;
+            if (scanOccupied(destination)) {
+                additionalPiece = board[destination->first][destination->second];
+                moveName++;
+            }
+            /*scanExecuteCastling(moves);
+            scanExecuteEnPassant(moves);*/
+        }
     }
     return moves;
+}
+
+void ChessBoard::performMove(Move* move) {
+    Pieces* piece = move->piece;
+    pair<int, int> start = piece->GetPosition();
+    pair<int, int> destination = (*move).destination;
+    piece->SetMove(destination);
+    board[destination.first][destination.second] = piece;
+    board[start.first][start.second] = nullptr;
+    if (move->moveName == 1) {
+        Pieces* additionalPiece = move->additionalPiece;
+        *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
+        delete additionalPiece;
+    }
 }
