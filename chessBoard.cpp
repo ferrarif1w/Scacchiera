@@ -11,6 +11,26 @@ bool ChessBoard::scanOccupied(pair<int, int>* pos) {
     return board[pos->first][pos->second] != nullptr;
 }
 
+void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves) {
+    //arrocco corto/lungo
+    Pieces* firstTower = piecesList[0];
+    Pieces* secondTower = piecesList[7];
+    Pieces* king = piecesList[3];
+    if (!(king && king->GetStatus() == 0)) return;
+    if (firstTower && firstTower->GetStatus() == 0) {
+        // arrocco lungo
+        pair<int, int> destination(0, 2);
+        int moveIndex = 4;
+        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, firstTower));   
+    }
+    if (secondTower && secondTower->GetStatus() == 0) {
+        // arrocco corto
+        pair<int, int> destination(0, 6);
+        int moveIndex = 3;
+        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, secondTower));   
+    }
+}
+
 void ChessBoard::insertPiece(Pieces* piece, pair<int, int> pos) {
     board[pos.first][pos.second] = piece;
     piecesList.push_back(piece);
@@ -86,8 +106,7 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable() {
                 additionalPiece = board[destination->first][destination->second];
                 moveName++;
             }
-            /*scanExecuteCastling(moves);
-            scanExecuteEnPassant(moves);*/
+            scanAddSpecialMoves(moves);
         }
     }
     return moves;
