@@ -119,6 +119,8 @@ std::vector<std::pair<int, int> *>& D::Pmove()
 
     while (position.first + i >= 0)
         Moves.push_back(new std::pair(position.first, position.second - i));
+
+    return Moves;
 }
 
 D::D(std::pair<int, int> position, char color) : Pieces(position, color, 68)
@@ -135,6 +137,8 @@ std::vector<std::pair<int, int> *>& P::Pmove()
 
     if(Moved == 0)
     Moves.push_back(new std::pair(position.first + 2, position.second));
+
+    return Moves;
 }
 
 P::P(std::pair<int, int> position, char color) : Pieces(position, color, 80)
@@ -158,6 +162,8 @@ std::vector<std::pair<int, int> *>& R::Pmove()
     Moves.push_back(new std::pair(position.first - 1, position.second-1));
     Moves.push_back(new std::pair(position.first + 1, position.second -1));
     Moves.push_back(new std::pair(position.first -1, position.second + 1));
+
+    return Moves;
 }
 
 R::R(std::pair<int, int> position, char color) : Pieces(position, color, 82)
@@ -182,6 +188,8 @@ std::vector<std::pair<int, int> *>& T::Pmove()
 
     while (position.first + i >= 0)
         Moves.push_back(new std::pair(position.first, position.second - i));
+
+    return Moves;
 }
 
 T::T(std::pair<int, int> position, char color) : Pieces(position, color, 84)
