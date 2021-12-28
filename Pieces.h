@@ -28,42 +28,42 @@ class Pieces
         virtual std::vector<std::pair<int, int>*>& Pmove() = 0;
 };
 
-class A : Pieces
+class A : public Pieces
 {
     public:
         A(std::pair<int, int> position, char color);
         std::vector<std::pair<int, int> *>& Pmove() override;
 };
 
-class C : Pieces
+class C : public Pieces
 {
 public:
     C(std::pair<int, int> position, char color);
     std::vector<std::pair<int, int> *>& Pmove() override;
 };
 
-class D : Pieces
+class D : public Pieces
 {
 public:
     D(std::pair<int, int> position, char color);
     std::vector<std::pair<int, int> *>& Pmove() override;
 };
 
-class P : Pieces
+class P : public Pieces
 {
 public:
     P(std::pair<int, int> position, char color);
     std::vector<std::pair<int, int> *>& Pmove() override;
 };
 
-class R : Pieces
+class R : public Pieces
 {
 public:
     R(std::pair<int, int> position, char color);
     std::vector<std::pair<int, int> *>& Pmove() override;
 };
 
-class T : Pieces
+class T : public Pieces
 {
 public:
     T(std::pair<int, int> position, char color);

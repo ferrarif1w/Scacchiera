@@ -1,3 +1,6 @@
+#ifndef CHESSBOARD_H
+#define CHESSBOARD_H
+
 #include <vector>
 #include <string>
 #include "Pieces.h"
@@ -21,3 +24,5 @@ class ChessBoard {
         void performMove(int moveIndex); //indice da vector<Move*> precedente
         string printBoard();
 };
+
+#endif
