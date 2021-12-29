@@ -34,7 +34,7 @@ int Pieces::GetStatus()
 char Pieces::GetName()
 
 {
-    if(Color == 'B')
+    if(Color == 'N')
     return Name;
     else
     return (Name+32);
