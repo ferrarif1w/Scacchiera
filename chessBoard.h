@@ -21,29 +21,38 @@ class ChessBoard {
             Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
             Move();
         };
-        ChessBoard();
+        ChessBoard(string log);
         vector<Move*> movesAvailable(char color);
-        void performMove(Move* move); //indice da vector<Move*> precedente
-        void performMoveReplay(pair<int, int> start, pair<int, int> destination);
+        //metodo per computer: mossa tratta da vector<Move*> ritornato da movesAvailable
+        //true se è possibile promozione
+        bool performMove(Move* move);
+        //metodo per giocatore: fornire posizioni
+        void performMove(pair<int, int> start, pair<int, int> destination, char color);
         string printBoard();
+        class InvalidMoveException {};
     private:
         //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
         //prima pezzi bianchi (pedoni per ultimi), poi pezzi neri (pedoni per ultimi)
         vector<Pieces*> piecesList;
         Move lastMove;
+        string logFile;
         const int SIZE = 8;
         bool scanBoundaries(pair<int, int>* pos);
         bool scanOccupied(pair<int, int>* pos);
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int> pos);
         void scanAddSpecialMoves(vector<Move*>& moves, char color);
-        void scanPromotion(Pieces* piece);
+        void scanPromptPromotion(Pieces* piece);
         bool scanCheck(pair<int, int>* pos);
         bool scanCheck();
         bool scanCheckMate();
         //p1 = pedone che cattura, p2 = pedone che viene catturato
         bool enPassantConditions(Pieces* p1, Pieces* p2);
 };
+
+//operatore di confronto per Move
+//controlla se pezzo e posizione di arrivo sono uguali
+bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2);
 
 #endif

@@ -22,6 +22,10 @@ bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
     return (lastMove.piece == p2 && p2->GetStatus() == 1 && (n2 == 80 || n2 == 112) && n1-n2 != 0);
 }
 
+/*bool ChessBoard::scanPromptPromotion(Pieces* piece) {
+    if ()
+}*/
+
 void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves, char color) {
     int offset = 0;
     if (color == 'B') offset = SIZE*2;
@@ -99,7 +103,7 @@ void ChessBoard::initializeRow(int row) {
     }
 }
 
-ChessBoard::ChessBoard() {
+ChessBoard::ChessBoard(string log) {
     for (int i = 0; i < 8; i++) board.push_back(vector<Pieces*>(8, nullptr));
     //inizializzare file
     initializeRow(0);
@@ -107,6 +111,7 @@ ChessBoard::ChessBoard() {
     initializeRow(6);
     initializeRow(7);
     lastMove.moveName = -1;
+    logFile = log;
 }
 
 string ChessBoard::printBoard() {
@@ -147,7 +152,7 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
     return moves;
 }
 
-void ChessBoard::performMove(ChessBoard::Move* move) {
+bool ChessBoard::performMove(ChessBoard::Move* move) {
     Pieces* piece = move->piece;
     pair<int, int> start = piece->GetPosition();
     pair<int, int> destination = (*move).destination;
@@ -160,11 +165,14 @@ void ChessBoard::performMove(ChessBoard::Move* move) {
         delete additionalPiece;
     }
     lastMove = *move;
-    if (piece->GetName() == 'P' || piece->GetName() == 'p') scanPromotion(piece);
+    scanPromptPromotion(piece);
 }
 
-void ChessBoard::performMoveReplay(pair<int, int> start, pair<int, int> destination) {
-    if (scanOccupied(&destination)) delete board[destination.first][destination.second];
-    board[destination.first][destination.second] = board[start.first][start.second];
-    board[start.first][start.second] = nullptr;
+void ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
+    vector<ChessBoard::Move*> moves = movesAvailable(color);
+    //if ()
+}
+
+bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2) {
+    return (m1.piece == m2.piece && m1.destination == m2.destination);
 }
