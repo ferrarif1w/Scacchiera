@@ -24,6 +24,7 @@ class ChessBoard {
         ChessBoard();
         vector<Move*> movesAvailable(char color);
         void performMove(Move* move); //indice da vector<Move*> precedente
+        void performMoveReplay(pair<int, int> start, pair<int, int> destination);
         string printBoard();
     private:
         //ogni vettore rappresenta una riga
@@ -37,6 +38,7 @@ class ChessBoard {
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int> pos);
         void scanAddSpecialMoves(vector<Move*>& moves, char color);
+        void scanPromotion(Pieces* piece);
         bool scanCheck(pair<int, int>* pos);
         bool scanCheck();
         bool scanCheckMate();

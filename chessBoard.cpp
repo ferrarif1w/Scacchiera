@@ -160,4 +160,11 @@ void ChessBoard::performMove(ChessBoard::Move* move) {
         delete additionalPiece;
     }
     lastMove = *move;
+    if (piece->GetName() == 'P' || piece->GetName() == 'p') scanPromotion(piece);
+}
+
+void ChessBoard::performMoveReplay(pair<int, int> start, pair<int, int> destination) {
+    if (scanOccupied(&destination)) delete board[destination.first][destination.second];
+    board[destination.first][destination.second] = board[start.first][start.second];
+    board[start.first][start.second] = nullptr;
 }
