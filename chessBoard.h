@@ -20,7 +20,7 @@ class ChessBoard {
             Pieces* additionalPiece = nullptr;
         };
         ChessBoard();
-        vector<Move*> movesAvailable();
+        vector<Move*> movesAvailable(char color);
         void performMove(Move* move); //indice da vector<Move*> precedente
         string printBoard();
     private:
@@ -33,7 +33,7 @@ class ChessBoard {
         bool scanOccupied(pair<int, int>* pos);
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int> pos);
-        void scanAddSpecialMoves(vector<Move*>& moves);
+        void scanAddSpecialMoves(vector<Move*>& moves, char color);
         bool scanCheck(pair<int, int>* pos);
         bool scanCheck();
         bool scanCheckMate();

@@ -11,7 +11,7 @@ bool ChessBoard::scanOccupied(pair<int, int>* pos) {
     return board[pos->first][pos->second] != nullptr;
 }
 
-void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves) {
+void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves, char color) {
     //arrocco corto/lungo
     Pieces* firstTower = piecesList[0];
     Pieces* secondTower = piecesList[7];
@@ -21,13 +21,13 @@ void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves) {
         // arrocco lungo
         pair<int, int> destination(0, 2);
         int moveIndex = 4;
-        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, firstTower));   
+        moves.push_back(new Move(king, destination, moveIndex, firstTower));   
     }
     if (secondTower && secondTower->GetStatus() == 0) {
         // arrocco corto
         pair<int, int> destination(0, 6);
         int moveIndex = 3;
-        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, secondTower));   
+        moves.push_back(new Move(king, destination, moveIndex, secondTower));   
     }
 }
 
@@ -92,10 +92,12 @@ string ChessBoard::printBoard() {
     return out;
 }
 
-vector<ChessBoard::Move*> ChessBoard::movesAvailable() {
+vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
     vector<ChessBoard::Move*> moves;
-    for (int i = 0; i < SIZE*4; i++) {
-        Pieces* piece = piecesList[i];
+    int start = 0;
+    if (color = 'B') start = SIZE*2;
+    for (int i = 0; i < SIZE*2; i++) {
+        Pieces* piece = piecesList[start+i];
         vector<pair<int, int>*> pieceMoves = piece->Pmove();
         for (int j = 0; j < pieceMoves.size(); j++) {
             pair<int, int>* destination = pieceMoves[j];
@@ -106,7 +108,7 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable() {
                 additionalPiece = board[destination->first][destination->second];
                 moveName++;
             }
-            scanAddSpecialMoves(moves);
+            scanAddSpecialMoves(moves, color);
         }
     }
     return moves;
