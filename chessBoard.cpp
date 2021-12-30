@@ -3,6 +3,9 @@
 #include <algorithm>
 using namespace std;
 
+ChessBoard::Move::Move(Pieces* p, pair<int, int> dest, int name, Pieces* add = nullptr) : 
+piece {p}, destination {dest}, moveName {name}, additionalPiece {add} {}
+
 bool ChessBoard::scanBoundaries(pair<int, int>* pos) {
     return (pos->first >= 0 && pos->first < SIZE && pos->second >= 0 && pos->second < SIZE);
 }
@@ -11,23 +14,52 @@ bool ChessBoard::scanOccupied(pair<int, int>* pos) {
     return board[pos->first][pos->second] != nullptr;
 }
 
+bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
+    if (!p2) return false;  //controlla se esiste pezzo
+    char n1 = p1->GetName();
+    char n2 = p2->GetName();
+    int row2 = p2->GetPosition().first;
+    return (lastMove.piece == p2 && p2->GetStatus() == 1 && (n2 == 80 || n2 == 112) && n1-n2 != 0);
+}
+
 void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves, char color) {
+    int offset = 0;
+    if (color == 'B') offset = SIZE*2;
     //arrocco corto/lungo
-    Pieces* firstTower = piecesList[0];
-    Pieces* secondTower = piecesList[7];
-    Pieces* king = piecesList[3];
+    Pieces* firstTower = piecesList[0+offset];
+    Pieces* secondTower = piecesList[7+offset];
+    Pieces* king = piecesList[3+offset];
     if (!(king && king->GetStatus() == 0)) return;
     if (firstTower && firstTower->GetStatus() == 0) {
         // arrocco lungo
         pair<int, int> destination(0, 2);
         int moveIndex = 4;
-        moves.push_back(new Move(king, destination, moveIndex, firstTower));   
+        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, firstTower));   
     }
     if (secondTower && secondTower->GetStatus() == 0) {
         // arrocco corto
         pair<int, int> destination(0, 6);
         int moveIndex = 3;
-        moves.push_back(new Move(king, destination, moveIndex, secondTower));   
+        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, secondTower));   
+    }
+
+    //en passant
+    //per essere valido, un pedone bianco dev'essere nella riga 5, un pedone nero nella riga 4
+    int moveIndex = 2;
+    for (int i = 0; i < SIZE; i++) {
+        Pieces* pawn = piecesList[i+offset];
+        pair<int, int> pos = pawn->GetPosition();
+        if (!(color == 'N' && pos.first == 3 || color == 'B' && pos.first == 4)) continue;
+        Pieces* toTheLeft = board[pos.first][pos.second-1];
+        Pieces* toTheRight = board[pos.first][pos.second+1];
+        if (enPassantConditions(pawn, toTheLeft)) {
+            pair<int, int> destination(pos.first - 1, pos.second + 1);
+            moves.push_back(new ChessBoard::Move(pawn, destination, moveIndex, toTheLeft));
+        }
+        if (enPassantConditions(pawn, toTheLeft)) {
+            pair<int, int> destination(pos.first - 1, pos.second + 1);
+            moves.push_back(new ChessBoard::Move(pawn, destination, moveIndex, toTheLeft));
+        }
     }
 }
 
@@ -74,6 +106,7 @@ ChessBoard::ChessBoard() {
     initializeRow(1);
     initializeRow(6);
     initializeRow(7);
+    lastMove.moveName = -1;
 }
 
 string ChessBoard::printBoard() {
@@ -103,18 +136,18 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
             pair<int, int>* destination = pieceMoves[j];
             Pieces* additionalPiece = nullptr;
             int moveName = 0;
-            if (!scanBoundaries(destination)) continue;
             if (scanOccupied(destination)) {
                 additionalPiece = board[destination->first][destination->second];
                 moveName++;
             }
-            scanAddSpecialMoves(moves, color);
+            moves.push_back(new ChessBoard::Move(piece, *destination, moveName, additionalPiece));
         }
     }
+    scanAddSpecialMoves(moves, color);
     return moves;
 }
 
-void ChessBoard::performMove(Move* move) {
+void ChessBoard::performMove(ChessBoard::Move* move) {
     Pieces* piece = move->piece;
     pair<int, int> start = piece->GetPosition();
     pair<int, int> destination = (*move).destination;
@@ -126,4 +159,5 @@ void ChessBoard::performMove(Move* move) {
         *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
         delete additionalPiece;
     }
+    lastMove = *move;
 }

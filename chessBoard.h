@@ -17,7 +17,9 @@ class ChessBoard {
             int moveName;
             //pezzo cattuarto   se moveName = 1,2
             //torre mossa       se moveName = 3,4
-            Pieces* additionalPiece = nullptr;
+            Pieces* additionalPiece;
+            Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
+            Move();
         };
         ChessBoard();
         vector<Move*> movesAvailable(char color);
@@ -28,6 +30,7 @@ class ChessBoard {
         vector<vector<Pieces*>> board;
         //prima pezzi bianchi (pedoni per ultimi), poi pezzi neri (pedoni per ultimi)
         vector<Pieces*> piecesList;
+        Move lastMove;
         const int SIZE = 8;
         bool scanBoundaries(pair<int, int>* pos);
         bool scanOccupied(pair<int, int>* pos);
@@ -37,6 +40,8 @@ class ChessBoard {
         bool scanCheck(pair<int, int>* pos);
         bool scanCheck();
         bool scanCheckMate();
+        //p1 = pedone che cattura, p2 = pedone che viene catturato
+        bool enPassantConditions(Pieces* p1, Pieces* p2);
 };
 
 #endif
