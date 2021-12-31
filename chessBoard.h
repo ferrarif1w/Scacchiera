@@ -51,7 +51,8 @@ class ChessBoard {
         bool scanCheckMate();
         //p1 = pedone che cattura, p2 = pedone che viene catturato
         bool enPassantConditions(Pieces* p1, Pieces* p2);
-        bool castlingConditions(Pieces* king, Pieces* tower);
+        //ritorna moveName adatto (3 se corto, 4 se lungo, 0 se non si può fare)
+        int castlingConditions(Pieces* king, Pieces* tower);
 };
 //operatore di confronto per Move
 //controlla se pezzo e posizione di arrivo sono uguali
