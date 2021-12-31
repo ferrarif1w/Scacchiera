@@ -25,49 +25,49 @@ class Pieces
         int GetStatus();
 
 
-        virtual std::vector<std::vector<std::pair<int, int>*>>& Pmove() = 0;
+        virtual std::vector<std::vector<std::pair<int, int>*>> Pmove() = 0;
 };
 
 class A : public Pieces
 {
     public:
         A(std::pair<int, int> position, char color);
-        std::vector<std::vector<std::pair<int, int> *>>& Pmove() override;
+        std::vector<std::vector<std::pair<int, int> *>> Pmove() override;
 };
 
 class C : public Pieces
 {
     public:
         C(std::pair<int, int> position, char color);
-        std::vector<std::vector<std::pair<int, int> *>>& Pmove() override;
+        std::vector<std::vector<std::pair<int, int> *>> Pmove() override;
 };
 
 class D : public Pieces
 {
     public:
         D(std::pair<int, int> position, char color);
-        std::vector<std::vector<std::pair<int, int> *>>& Pmove() override;
+        std::vector<std::vector<std::pair<int, int> *>> Pmove() override;
 };
 
 class P : public Pieces
 {
     public:
         P(std::pair<int, int> position, char color);
-        std::vector<std::vector<std::pair<int, int> *>>& Pmove() override;
+        std::vector<std::vector<std::pair<int, int> *>> Pmove() override;
 };
 
 class R : public Pieces
 {
     public:
         R(std::pair<int, int> position, char color);
-        std::vector<std::vector<std::pair<int, int> *>>& Pmove() override;
+        std::vector<std::vector<std::pair<int, int> *>> Pmove() override;
 };
 
 class T : public Pieces
 {
     public:
         T(std::pair<int, int> position, char color);
-        std::vector<std::vector<std::pair<int, int> *>>& Pmove() override;
+        std::vector<std::vector<std::pair<int, int> *>> Pmove() override;
 };
 
 #endif

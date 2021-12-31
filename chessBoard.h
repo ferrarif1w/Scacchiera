@@ -39,7 +39,7 @@ class ChessBoard {
         string logFile;
         const int SIZE = 8;
         bool scanBoundaries(pair<int, int>* pos);
-        bool scanOccupied(pair<int, int>* pos);
+        char scanOccupied(pair<int, int>* pos);
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int>* pos);
         void scanAddSpecialMoves(vector<Move*>& moves, char color);

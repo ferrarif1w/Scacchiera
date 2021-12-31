@@ -14,8 +14,10 @@ bool ChessBoard::scanBoundaries(pair<int, int>* pos) {
     return (pos->first >= 0 && pos->first < SIZE && pos->second >= 0 && pos->second < SIZE);
 }
 
-bool ChessBoard::scanOccupied(pair<int, int>* pos) {
-    return board[pos->first][pos->second] != nullptr;
+char ChessBoard::scanOccupied(pair<int, int>* pos) {
+    Pieces* piece = board[pos->first][pos->second];
+    if (!piece) return 0;
+    else return piece->GetColor();
 }
 
 bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
@@ -114,7 +116,7 @@ ChessBoard::ChessBoard(string log) {
     initializeRow(1);
     initializeRow(6);
     initializeRow(7);
-    lastMove->moveName = -1;
+    lastMove = new ChessBoard::Move(nullptr, nullptr, -1, nullptr);
     logFile = log;
 }
 
@@ -137,7 +139,7 @@ string ChessBoard::printBoard() {
 vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
     vector<ChessBoard::Move*> moves;
     int start = 0;
-    if (color = 'B') start = SIZE*2;
+    if (color == 'N') start = SIZE*2;
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
         vector<vector<pair<int, int>*>> pieceMoves = piece->Pmove();
@@ -145,15 +147,17 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
             vector<pair<int, int>*> tmp = pieceMoves[j];
             for (int k = 0; k < tmp.size(); k++) {
                 pair<int, int>* destination = tmp[k];
+                if (!scanBoundaries(destination)) continue;
                 Pieces* additionalPiece = nullptr;
                 int moveName = 0;
-                bool occ = scanOccupied(destination);
-                if (occ) {
+                char occ = scanOccupied(destination);
+                if (occ == color) break;
+                else if (occ != color && occ != 0) { //ovvero occ = colore avversario
                     moveName++;
                     additionalPiece = board[destination->first][destination->second];
                 }
                 moves.push_back(new Move(piece, destination, moveName, additionalPiece));
-                if (occ && pieceMoves.size() > 1) break;
+                if (occ != 0 && pieceMoves.size() > 1) break;
             }
         }
     }
@@ -175,6 +179,7 @@ bool ChessBoard::performMove(ChessBoard::Move* move) {
     }
     lastMove = move;
     //scanPromptPromotion(piece);
+    return true;
 }
 
 void ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
