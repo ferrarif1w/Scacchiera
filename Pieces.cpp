@@ -210,10 +210,15 @@ std::vector<std::vector<std::pair<int, int> *>>& P::Pmove()
     std::vector<std::vector<std::pair<int, int> *>> Moves;
     std::vector<std::pair<int, int> *> tmp;
 
-    tmp.push_back(new std::pair(position.first + 1, position.second));
+    int Col = 1;
+
+    if(Color = 'N')
+        Col = -1;
+
+    tmp.push_back(new std::pair(position.first + Col, position.second));
 
     if(Moved == 0)
-        tmp.push_back(new std::pair(position.first + 2, position.second));
+        tmp.push_back(new std::pair(position.first + (2*Col), position.second));
 
     Moves.push_back(tmp);
 

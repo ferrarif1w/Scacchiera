@@ -137,6 +137,16 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
         vector<vector<pair<int, int>*>> pieceMoves = piece->Pmove();
+        int j = 0;
+        while (j < pieceMoves.size()) {
+            vector<pair<int, int>*> tmp = pieceMoves[j];
+            int k = 0;
+            while (k < tmp.size()) {
+                pair<int, int>* destination = tmp[j];
+                Pieces* additionalPiece = nullptr;
+                int moveName = 0;
+            }
+        }
         /*for (int j = 0; j < pieceMoves.size(); j++) {
             pair<int, int>* destination = pieceMoves[j];
             Pieces* additionalPiece = nullptr;
