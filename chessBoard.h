@@ -39,6 +39,8 @@ class ChessBoard {
         string logFile;
         const int SIZE = 8;
         bool scanBoundaries(pair<int, int>* pos);
+        //se casella occupata, ritorna colore del pezzo presente
+        //altrimenti, ritorna 0
         char scanOccupied(pair<int, int>* pos);
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int>* pos);
@@ -49,6 +51,7 @@ class ChessBoard {
         bool scanCheckMate();
         //p1 = pedone che cattura, p2 = pedone che viene catturato
         bool enPassantConditions(Pieces* p1, Pieces* p2);
+        bool castlingConditions(Pieces* king, Pieces* tower);
 };
 //operatore di confronto per Move
 //controlla se pezzo e posizione di arrivo sono uguali

@@ -28,6 +28,22 @@ bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
     return (lastMove->piece == p2 && p2->GetStatus() == 1 && (n2 == 80 || n2 == 112) && n1-n2 != 0);
 }
 
+bool ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
+    int start = king->GetPosition().second;
+    int finish = tower->GetPosition().second;
+    int row = king->GetPosition().first;
+    int delta;
+    if (start < finish) delta = 1;
+    else delta = -1;
+    for (int i = start+1; i < finish ; i += delta) {
+        pair<int, int>* tmp = new pair(row, i);
+        char result = scanOccupied(tmp);
+        delete tmp;
+        if (result != 0) return false;
+    }
+    return true;
+}
+
 /*bool ChessBoard::scanPromptPromotion(Pieces* piece) {
     if ()
 }*/
@@ -41,6 +57,7 @@ void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves, char colo
     Pieces* king = piecesList[3+offset];
     if (!(king && king->GetStatus() == 0)) return;
     if (firstTower && firstTower->GetStatus() == 0) {
+        for (int i = )
         // arrocco lungo
         pair<int, int>* destination = new pair(0, 2);
         int moveIndex = 4;
