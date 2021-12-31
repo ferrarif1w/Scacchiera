@@ -50,7 +50,6 @@ class ChessBoard {
         //p1 = pedone che cattura, p2 = pedone che viene catturato
         bool enPassantConditions(Pieces* p1, Pieces* p2);
 };
-
 //operatore di confronto per Move
 //controlla se pezzo e posizione di arrivo sono uguali
 bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2);

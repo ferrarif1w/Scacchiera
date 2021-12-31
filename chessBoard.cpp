@@ -136,8 +136,8 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
     if (color = 'B') start = SIZE*2;
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
-        vector<pair<int, int>*> pieceMoves = piece->Pmove();
-        for (int j = 0; j < pieceMoves.size(); j++) {
+        vector<vector<pair<int, int>*>> pieceMoves = piece->Pmove();
+        /*for (int j = 0; j < pieceMoves.size(); j++) {
             pair<int, int>* destination = pieceMoves[j];
             Pieces* additionalPiece = nullptr;
             int moveName = 0;
@@ -146,7 +146,7 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
                 moveName++;
             }
             moves.push_back(new ChessBoard::Move(piece, *destination, moveName, additionalPiece));
-        }
+        }*/
     }
     scanAddSpecialMoves(moves, color);
     return moves;
