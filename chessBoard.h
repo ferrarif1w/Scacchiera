@@ -24,12 +24,15 @@ class ChessBoard {
         ChessBoard(string log);
         vector<Move*> movesAvailable(char color);
         //metodo per computer: mossa tratta da vector<Move*> ritornato da movesAvailable
-        //true se è possibile promozione
-        bool performMove(Move* move);
+        //pezzo da promuovere se promozione possibile
+        Pieces* performMove(Move* move);
         //metodo per giocatore: fornire posizioni
-        void performMove(pair<int, int> start, pair<int, int> destination, char color);
+        //pezzo da promuovere se promozione possibile
+        Pieces* performMove(pair<int, int> start, pair<int, int> destination, char color);
+        void performPromotion(Pieces* piece, char newPiece);
         string printBoard();
         class InvalidMoveException {};
+        class InvalidPieceException {};
     private:
         //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
@@ -37,6 +40,7 @@ class ChessBoard {
         vector<Pieces*> piecesList;
         Move* lastMove;
         string logFile;
+        Pieces* pieceToPromote;
         const int SIZE = 8;
         bool scanBoundaries(pair<int, int>* pos);
         //se casella occupata, ritorna colore del pezzo presente
@@ -45,7 +49,7 @@ class ChessBoard {
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int>* pos);
         void scanAddSpecialMoves(vector<Move*>& moves, char color);
-        void scanPromptPromotion(Pieces* piece);
+        bool scanPromotion(Pieces* piece);
         bool scanCheck(pair<int, int>* pos);
         bool scanCheck();
         bool scanCheckMate();

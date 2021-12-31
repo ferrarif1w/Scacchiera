@@ -20,6 +20,11 @@ char ChessBoard::scanOccupied(pair<int, int>* pos) {
     else return piece->GetColor();
 }
 
+bool ChessBoard::scanPromotion(Pieces* piece) {
+    return (piece->GetName() == 80 && piece->GetPosition().first == 0 ||
+        piece->GetName() == 112 && piece->GetPosition().first == 7);
+}
+
 bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
     if (!p2) return false;  //controlla se esiste pezzo
     char n1 = p1->GetName();
@@ -48,10 +53,6 @@ int ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
     if (abs(start-finish) == 4) return 4;
     else return 3;
 }
-
-/*bool ChessBoard::scanPromptPromotion(Pieces* piece) {
-    if ()
-}*/
 
 void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves, char color) {
     int offset = 0;
@@ -133,6 +134,7 @@ ChessBoard::ChessBoard(string log) {
     initializeRow(6);
     initializeRow(7);
     lastMove = new ChessBoard::Move(nullptr, nullptr, -1, nullptr);
+    pieceToPromote = nullptr;
     logFile = log;
 }
 
@@ -181,7 +183,7 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
     return moves;
 }
 
-bool ChessBoard::performMove(ChessBoard::Move* move) {
+Pieces* ChessBoard::performMove(ChessBoard::Move* move) {
     Pieces* piece = move->piece;
     pair<int, int> start = piece->GetPosition();
     pair<int, int> destination = *move->destination;
@@ -194,15 +196,19 @@ bool ChessBoard::performMove(ChessBoard::Move* move) {
         delete additionalPiece;
     }
     lastMove = move;
-    //scanPromptPromotion(piece);
-    return true;
+    if (scanPromotion(piece)) return piece;
+    else return nullptr;
 }
 
-void ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
+Pieces* ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
     vector<ChessBoard::Move*> moves = movesAvailable(color);
     Pieces* piece = board[start.first][start.second];
     ChessBoard::Move* tmpMove = new ChessBoard::Move(piece, &destination, 0, nullptr);
     auto result = find(moves.begin(), moves.end(), tmpMove);
     if (result == moves.end()) throw InvalidMoveException();
-    performMove(*result);
+    return performMove(*result);
+}
+
+void ChessBoard::performPromotion(Pieces* piece, char newPiece) {
+    
 }
