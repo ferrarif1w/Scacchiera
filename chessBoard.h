@@ -43,6 +43,7 @@ class ChessBoard {
         Pieces* pieceToPromote;
         const int SIZE = 8;
         bool scanBoundaries(pair<int, int>* pos);
+        bool scanBoundaries(int row, int column);
         //se casella occupata, ritorna colore del pezzo presente
         //altrimenti, ritorna 0
         char scanOccupied(pair<int, int>* pos);

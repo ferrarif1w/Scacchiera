@@ -3,12 +3,12 @@
 #include "Pieces.h"
 #include "chessBoard.h"
 
-Pieces::Pieces(std::pair<int, int> pos, char col, char n)
+Pieces::Pieces(std::pair<int, int> pos, char col, char n, int moved)
 {
     position = pos;
     Color = col;
     Name = n;
-    Moved = 0;
+    Moved = moved;
 }
 
 void Pieces::SetMove(std::pair<int, int> NewPosition)
@@ -87,7 +87,7 @@ std::vector<std::vector<std::pair<int, int> *>> A::Pmove() //vector<vector<pair<
     return Moves;
 }
 
-    A::A(std::pair<int, int> position, char color) : Pieces(position, color, 65)
+    A::A(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 65, moved)
     {}
 
 
@@ -110,7 +110,7 @@ std::vector<std::vector<std::pair<int, int> *>> C::Pmove()
     return Moves;
 }
 
-C::C(std::pair<int, int> position, char color) : Pieces(position, color, 67)
+C::C(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 67, moved)
 {}
 
 
@@ -199,7 +199,7 @@ std::vector<std::vector<std::pair<int, int> *>> D::Pmove()
 }
 
 
-D::D(std::pair<int, int> position, char color) : Pieces(position, color, 68)
+D::D(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 68, moved)
 {}
 
 
@@ -225,7 +225,7 @@ std::vector<std::vector<std::pair<int, int> *>> P::Pmove()
     return Moves;
 }
 
-P::P(std::pair<int, int> position, char color) : Pieces(position, color, 80)
+P::P(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 80, moved)
 {}
 
 
@@ -253,7 +253,7 @@ std::vector<std::vector<std::pair<int, int> *>> R::Pmove()
     return Moves;
 }
 
-R::R(std::pair<int, int> position, char color) : Pieces(position, color, 82)
+R::R(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 82, moved)
 {}
 
 
@@ -303,5 +303,5 @@ std::vector<std::vector<std::pair<int, int> *>> T::Pmove()
     return Moves;
 }
 
-T::T(std::pair<int, int> position, char color) : Pieces(position, color, 84)
+T::T(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 84, moved)
 {}
