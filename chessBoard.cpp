@@ -196,8 +196,10 @@ vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
                 Pieces* additionalPiece = nullptr;
                 int moveName = 0;
                 char occ = scanOccupied(destination);
-                if (occ == color) break;
+                if (occ == color && pieceMoves.size() > 1) break;
+                else if (occ == color && pieceMoves.size() == 1) continue;
                 else if (occ != color && occ != 0) { //ovvero occ = colore avversario
+                    if (piece->GetName() == 80 || piece->GetName() == 112) continue;
                     moveName++;
                     additionalPiece = board[destination->first][destination->second];
                 }
@@ -217,10 +219,28 @@ Pieces* ChessBoard::performMove(ChessBoard::Move* move) {
     piece->SetMove(destination);
     board[destination.first][destination.second] = piece;
     board[start.first][start.second] = nullptr;
-    if (move->moveName == 1) {
-        Pieces* additionalPiece = move->additionalPiece;
-        *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
-        delete additionalPiece;
+    switch (move->moveName) {
+        case 0:
+            break;
+        case 3: {   //arrocco corto
+                Pieces* tower = move->additionalPiece; //colonna attuale: 7, col. destinazione: 5
+                pair<int, int> pos = tower->GetPosition();
+                board[pos.first][pos.second] = nullptr;
+                board[pos.first][pos.second-2] = tower;
+                break;
+            }
+        case 4: {   //arrocco lungo
+                Pieces* tower = move->additionalPiece; //colonna attuale: 0, col. destinazione: 4
+                pair<int, int> pos = tower->GetPosition();
+                board[pos.first][pos.second] = nullptr;
+                board[pos.first][pos.second+3] = tower;
+                break;
+            }
+        default:    //mossa normale con cattura, en passant
+            Pieces* additionalPiece = move->additionalPiece;
+            *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
+            delete additionalPiece;
+            break;
     }
     lastMove = move;
     if (scanPromotion(piece)) return piece;
