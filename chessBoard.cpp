@@ -1,17 +1,35 @@
 #include "chessBoard.h"
 #include "Pieces.h"
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-ChessBoard::Move::Move(Pieces* p, pair<int, int> dest, int name, Pieces* add = nullptr) : 
+ChessBoard::Move::Move(Pieces* p, pair<int, int>* dest, int name, Pieces* add = nullptr) : 
 piece {p}, destination {dest}, moveName {name}, additionalPiece {add} {}
+
+bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2) {
+    return (m1.piece == m2.piece && m1.destination == m2.destination);
+}
 
 bool ChessBoard::scanBoundaries(pair<int, int>* pos) {
     return (pos->first >= 0 && pos->first < SIZE && pos->second >= 0 && pos->second < SIZE);
 }
 
-bool ChessBoard::scanOccupied(pair<int, int>* pos) {
-    return board[pos->first][pos->second] != nullptr;
+bool ChessBoard::scanBoundaries(int row, int column) {
+    pair<int, int>* tmp = new pair(row, column);
+    bool result = scanBoundaries(tmp);
+    delete tmp;
+    return result;
+}
+
+char ChessBoard::scanOccupied(pair<int, int>* pos) {
+    Pieces* piece = board[pos->first][pos->second];
+    if (!piece) return 0;
+    else return piece->GetColor();
+}
+
+bool ChessBoard::scanPromotion(Pieces* piece) {
+    return (piece->GetName() == 80 && piece->GetPosition().first == 0 ||
+        piece->GetName() == 112 && piece->GetPosition().first == 7);
 }
 
 bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
@@ -19,56 +37,87 @@ bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
     char n1 = p1->GetName();
     char n2 = p2->GetName();
     int row2 = p2->GetPosition().first;
-    return (lastMove.piece == p2 && p2->GetStatus() == 1 && (n2 == 80 || n2 == 112) && n1-n2 != 0);
+    int row1 = p1->GetPosition().first;
+    return (row1 == row2 && (n2 == 80 && row2 == 4 || n2 == 112 && row2 == 3) &&
+        lastMove.piece == p2 && p2->GetStatus() == 1 && n1-n2 != 0);
 }
 
-/*bool ChessBoard::scanPromptPromotion(Pieces* piece) {
-    if ()
-}*/
+int ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
+    if (!(king && tower)) return 0;
+    if (!(king->GetStatus() == 0 && tower->GetStatus() == 0)) return 0;
+    int start = king->GetPosition().second;
+    int finish = tower->GetPosition().second;
+    int row = king->GetPosition().first;
+    int factor;
+    if (start < finish) factor = 1;
+    else factor = -1;
+    for (int i = 1; i < abs(start-finish); i++) {
+        pair<int, int>* tmp = new pair(row, start + i*factor);
+        char result = scanOccupied(tmp);
+        delete tmp;
+        if (result != 0) return 0;
+    }
+    if (abs(start-finish) == 4) return 4;
+    else return 3;
+}
 
-void ChessBoard::scanAddSpecialMoves(vector<ChessBoard::Move*>& moves, char color) {
+void ChessBoard::scanAddSpecialMoves(vector<Move>& moves, char color) {
     int offset = 0;
     if (color == 'B') offset = SIZE*2;
-    //arrocco corto/lungo
+
+    //arrocco
     Pieces* firstTower = piecesList[0+offset];
     Pieces* secondTower = piecesList[7+offset];
     Pieces* king = piecesList[3+offset];
-    if (!(king && king->GetStatus() == 0)) return;
-    if (firstTower && firstTower->GetStatus() == 0) {
-        // arrocco lungo
-        pair<int, int> destination(0, 2);
-        int moveIndex = 4;
-        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, firstTower));   
-    }
-    if (secondTower && secondTower->GetStatus() == 0) {
-        // arrocco corto
-        pair<int, int> destination(0, 6);
-        int moveIndex = 3;
-        moves.push_back(new ChessBoard::Move(king, destination, moveIndex, secondTower));   
-    }
+    //arrocco lungo
+    if (castlingConditions(king, firstTower))
+        moves.push_back(Move(king, new pair(0,2), 4, firstTower));
+    //arrocco corto
+    if (castlingConditions(king, secondTower))
+        moves.push_back(Move(king, new pair(0,6), 3, firstTower));
 
-    //en passant
+    //en passant + controllare se pedoni hanno pedine da mangiare in diagonale
     //per essere valido, un pedone bianco dev'essere nella riga 5, un pedone nero nella riga 4
-    int moveIndex = 2;
+    int direction;
+    if (color == 'B') direction = 1;
+    else direction = -1;
     for (int i = 0; i < SIZE; i++) {
-        Pieces* pawn = piecesList[i+offset];
+        Pieces* pawn = piecesList[8+i+offset];
+        if (pawn->GetName() == 80 || pawn->GetName() == 112) continue;
         pair<int, int> pos = pawn->GetPosition();
-        if (!(color == 'N' && pos.first == 3 || color == 'B' && pos.first == 4)) continue;
-        Pieces* toTheLeft = board[pos.first][pos.second-1];
-        Pieces* toTheRight = board[pos.first][pos.second+1];
-        if (enPassantConditions(pawn, toTheLeft)) {
-            pair<int, int> destination(pos.first - 1, pos.second + 1);
-            moves.push_back(new ChessBoard::Move(pawn, destination, moveIndex, toTheLeft));
+        if (scanBoundaries(pos.first, pos.second-direction)) {
+            Pieces* toTheLeft = board[pos.first][pos.second-direction];
+            if (enPassantConditions(pawn, toTheLeft)) {
+                pair<int, int>* destination = new pair(pos.first + direction, pos.second - direction);
+                moves.push_back(Move(pawn, destination, 2, toTheLeft));
+            }
         }
-        if (enPassantConditions(pawn, toTheLeft)) {
-            pair<int, int> destination(pos.first - 1, pos.second + 1);
-            moves.push_back(new ChessBoard::Move(pawn, destination, moveIndex, toTheLeft));
+        if (scanBoundaries(pos.first, pos.second+direction)) {
+            Pieces* toTheRight = board[pos.first][pos.second+direction];
+            if (enPassantConditions(pawn, toTheRight)) {
+                pair<int, int>* destination = new pair(pos.first + direction, pos.second + direction);
+                moves.push_back(Move(pawn, destination, 2, toTheRight));
+            }
+        }
+        if (scanBoundaries(pos.first+direction, pos.second-direction)) {
+            Pieces* forwardLeft = board[pos.first+direction][pos.second-direction];
+            if (forwardLeft && forwardLeft->GetColor() != color) {
+                pair<int, int>* destination = new pair(pos.first + direction, pos.second - direction);
+                moves.push_back(Move(pawn, destination, 1, forwardLeft));
+            }
+        }
+        if (scanBoundaries(pos.first+direction, pos.second+direction)) {
+            Pieces* forwardRight = board[pos.first+direction][pos.second+direction];
+            if (forwardRight && forwardRight->GetColor() != color) {
+                pair<int, int>* destination = new pair(pos.first + direction, pos.second + direction);
+                moves.push_back(Move(pawn, destination, 1, forwardRight));
+            }
         }
     }
 }
 
-void ChessBoard::insertPiece(Pieces* piece, pair<int, int> pos) {
-    board[pos.first][pos.second] = piece;
+void ChessBoard::insertPiece(Pieces* piece, pair<int, int>* pos) {
+    board[pos->first][pos->second] = piece;
     piecesList.push_back(piece);
 }
 
@@ -80,26 +129,26 @@ void ChessBoard::initializeRow(int row) {
     if (row == 1 || row == 6) {   
         for (int i = 0; i < SIZE; i++) {
             piece = new P(pair(row, i), color);
-            insertPiece(piece, pair(row, i));
+            insertPiece(piece, new pair(row, i));
         }
     }
     else if (row == 0 || row == 7) {
         piece = new T(pair(row, 0), color);
-        insertPiece(piece, pair(row, 0));
+        insertPiece(piece, new pair(row, 0));
         piece = new C(pair(row, 1), color);
-        insertPiece(piece, pair(row, 1));
+        insertPiece(piece, new pair(row, 1));
         piece = new A(pair(row, 2), color);
-        insertPiece(piece, pair(row, 2));
+        insertPiece(piece, new pair(row, 2));
         piece = new D(pair(row, 3), color);
-        insertPiece(piece, pair(row, 3));
+        insertPiece(piece, new pair(row, 3));
         piece = new R(pair(row, 4), color);
-        insertPiece(piece, pair(row, 4));
+        insertPiece(piece, new pair(row, 4));
         piece = new A(pair(row, 5), color);
-        insertPiece(piece, pair(row, 5));
+        insertPiece(piece, new pair(row, 5));
         piece = new C(pair(row, 6), color);
-        insertPiece(piece, pair(row, 6));
+        insertPiece(piece, new pair(row, 6));
         piece = new T(pair(row, 7), color);
-        insertPiece(piece, pair(row, 7));
+        insertPiece(piece, new pair(row, 7));
     }
 }
 
@@ -110,7 +159,8 @@ ChessBoard::ChessBoard(string log) {
     initializeRow(1);
     initializeRow(6);
     initializeRow(7);
-    lastMove.moveName = -1;
+    lastMove = Move(nullptr, nullptr, -1, nullptr);
+    pieceToPromote = nullptr;
     logFile = log;
 }
 
@@ -130,59 +180,109 @@ string ChessBoard::printBoard() {
     return out;
 }
 
-vector<ChessBoard::Move*> ChessBoard::movesAvailable(char color) {
-    vector<ChessBoard::Move*> moves;
+vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
+    vector<Move> moves;
     int start = 0;
-    if (color = 'B') start = SIZE*2;
+    if (color == 'N') start = SIZE*2;
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
+        if (!piece) continue;
         vector<vector<pair<int, int>*>> pieceMoves = piece->Pmove();
-        int j = 0;
-        while (j < pieceMoves.size()) {
+        for (int j = 0; j < pieceMoves.size(); j++) {
             vector<pair<int, int>*> tmp = pieceMoves[j];
-            int k = 0;
-            while (k < tmp.size()) {
-                pair<int, int>* destination = tmp[j];
+            for (int k = 0; k < tmp.size(); k++) {
+                pair<int, int>* destination = tmp[k];
+                if (!scanBoundaries(destination)) continue;
                 Pieces* additionalPiece = nullptr;
                 int moveName = 0;
+                char occ = scanOccupied(destination);
+                if (occ == color && pieceMoves.size() > 1) break;
+                else if (occ == color && pieceMoves.size() == 1) continue;
+                else if (occ != color && occ != 0) { //ovvero occ = colore avversario
+                    if (piece->GetName() == 80 || piece->GetName() == 112) continue;
+                    moveName++;
+                    additionalPiece = board[destination->first][destination->second];
+                }
+                moves.push_back(Move(piece, destination, moveName, additionalPiece));
+                if (occ != 0 && pieceMoves.size() > 1) break;
             }
         }
-        /*for (int j = 0; j < pieceMoves.size(); j++) {
-            pair<int, int>* destination = pieceMoves[j];
-            Pieces* additionalPiece = nullptr;
-            int moveName = 0;
-            if (scanOccupied(destination)) {
-                additionalPiece = board[destination->first][destination->second];
-                moveName++;
-            }
-            moves.push_back(new ChessBoard::Move(piece, *destination, moveName, additionalPiece));
-        }*/
     }
     scanAddSpecialMoves(moves, color);
     return moves;
 }
 
-bool ChessBoard::performMove(ChessBoard::Move* move) {
-    Pieces* piece = move->piece;
+int ChessBoard::performMove(Move move) {
+    Pieces* piece = move.piece;
     pair<int, int> start = piece->GetPosition();
-    pair<int, int> destination = (*move).destination;
+    pair<int, int> destination = *move.destination;
     piece->SetMove(destination);
     board[destination.first][destination.second] = piece;
     board[start.first][start.second] = nullptr;
-    if (move->moveName == 1) {
-        Pieces* additionalPiece = move->additionalPiece;
-        *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
-        delete additionalPiece;
+    switch (move.moveName) {
+        case 0:
+            break;
+        case 3: {   //arrocco corto
+                Pieces* tower = move.additionalPiece; //colonna attuale: 7, col. destinazione: 5
+                pair<int, int> pos = tower->GetPosition();
+                board[pos.first][pos.second] = nullptr;
+                board[pos.first][pos.second-2] = tower;
+                break;
+            }
+        case 4: {   //arrocco lungo
+                Pieces* tower = move.additionalPiece; //colonna attuale: 0, col. destinazione: 4
+                pair<int, int> pos = tower->GetPosition();
+                board[pos.first][pos.second] = nullptr;
+                board[pos.first][pos.second+3] = tower;
+                break;
+            }
+        default:    //mossa normale con cattura, en passant
+            Pieces* additionalPiece = move.additionalPiece;
+            *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
+            delete additionalPiece;
+            break;
     }
-    lastMove = *move;
-    scanPromptPromotion(piece);
+    lastMove = move;
+    if (scanPromotion(piece)) {
+        pieceToPromote = piece;
+        return 1;
+    }
+    if (scanCheckMate()) return 0;
+    else return -1;
 }
 
-void ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
-    vector<ChessBoard::Move*> moves = movesAvailable(color);
-    //if ()
+int ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
+    vector<Move> moves = movesAvailable(color);
+    Pieces* piece = board[start.first][start.second];
+    Move tmpMove = Move(piece, &destination, 0, nullptr);
+    auto result = find(moves.begin(), moves.end(), tmpMove);
+    if (result == moves.end()) throw InvalidMoveException();
+    return performMove(*result);
 }
 
-bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2) {
-    return (m1.piece == m2.piece && m1.destination == m2.destination);
+void ChessBoard::performPromotion(Pieces* piece, char code) {
+    pair<int, int> pos = piece->GetPosition();
+    char color = piece->GetColor();
+    int moves = piece->GetStatus();
+    Pieces* newPiece;
+    switch (code) {
+        case 65:    //alfiere
+            newPiece = new A(pos, color, moves);
+            break;
+        case 67:    //cavallo
+            newPiece = new C(pos, color, moves);
+            break;
+        case 68:    //regina
+            newPiece = new D(pos, color, moves);
+            break;
+        case 82:    //re
+            newPiece = new R(pos, color, moves);
+            break;
+        case 84:    //torre
+            newPiece = new T(pos, color, moves);
+            break;
+    }
+    board[pos.first][pos.second] = newPiece;
+    *(find(piecesList.begin(), piecesList.end(), piece)) = newPiece;
+    delete piece;
 }

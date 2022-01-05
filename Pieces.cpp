@@ -3,12 +3,12 @@
 #include "Pieces.h"
 #include "chessBoard.h"
 
-Pieces::Pieces(std::pair<int, int> pos, char col, char n)
+Pieces::Pieces(std::pair<int, int> pos, char col, char n, int moved)
 {
     position = pos;
     Color = col;
     Name = n;
-    Moved = 0;
+    Moved = moved;
 }
 
 void Pieces::SetMove(std::pair<int, int> NewPosition)
@@ -43,13 +43,13 @@ char Pieces::GetName()
 
 
 //Alfiere------------------------
-std::vector<std::vector<std::pair<int, int> *>>& A::Pmove() //vector<vector<pair<int, int>>>
+std::vector<std::vector<std::pair<int, int> *>> A::Pmove() //vector<vector<pair<int, int>>>
 {
     std::vector<std::vector<std::pair<int, int> *>> Moves;
     int i=1;
 
     std::vector<std::pair<int, int> *> m1;
-    while (position.first + i < 8 && position.second + i >= 0) //genera un vettore
+    while (position.first + i < 8 && position.second + i < 8) //genera un vettore
         {
             m1.push_back(new std::pair(position.first + i, position.second + i));
             i++;
@@ -67,7 +67,7 @@ std::vector<std::vector<std::pair<int, int> *>>& A::Pmove() //vector<vector<pair
     i = 1;
 
     std::vector<std::pair<int, int> *> m3;
-    while (position.first - i < 8 && position.second + i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second + i < 8) //genera un vettore
     {
         m3.push_back(new std::pair(position.first - i, position.second + i));
         i++;
@@ -76,7 +76,7 @@ std::vector<std::vector<std::pair<int, int> *>>& A::Pmove() //vector<vector<pair
     i = 1;
 
     std::vector<std::pair<int, int> *> m4;
-    while (position.first - i < 8 && position.second - i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second - i >= 0) //genera un vettore
     {
         m4.push_back(new std::pair(position.first - i, position.second - i));
         i++;
@@ -87,13 +87,13 @@ std::vector<std::vector<std::pair<int, int> *>>& A::Pmove() //vector<vector<pair
     return Moves;
 }
 
-    A::A(std::pair<int, int> position, char color) : Pieces(position, color, 65)
+    A::A(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 65, moved)
     {}
 
 
 
 //Cavallo------------------------
-std::vector<std::vector<std::pair<int, int> *>>& C::Pmove()
+std::vector<std::vector<std::pair<int, int> *>> C::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> *>> Moves;
     std::vector<std::pair<int, int> *> tmp;
@@ -110,19 +110,19 @@ std::vector<std::vector<std::pair<int, int> *>>& C::Pmove()
     return Moves;
 }
 
-C::C(std::pair<int, int> position, char color) : Pieces(position, color, 67)
+C::C(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 67, moved)
 {}
 
 
 
 //Donna------------------------
-std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
+std::vector<std::vector<std::pair<int, int> *>> D::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> *>> Moves;
     int i = 1;
 
     std::vector<std::pair<int, int> *> m1;
-    while (position.first + i < 8 && position.second + i >= 0) //genera un vettore
+    while (position.first + i < 8 && position.second + i < 8) //genera un vettore
     {
         m1.push_back(new std::pair(position.first + i, position.second + i));
         i++;
@@ -140,7 +140,7 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m3;
-    while (position.first - i < 8 && position.second + i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second + i >= 0) //genera un vettore
     {
         m3.push_back(new std::pair(position.first - i, position.second + i));
         i++;
@@ -149,7 +149,7 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m4;
-    while (position.first - i < 8 && position.second - i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second - i >= 0) //genera un vettore
     {
         m4.push_back(new std::pair(position.first - i, position.second - i));
         i++;
@@ -160,7 +160,7 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
         //--
 
     std::vector<std::pair<int, int> *> m5;
-    while (position.first + i >= 0)
+    while (position.first + i < 8)
     {
         m5.push_back(new std::pair(position.first + i, position.second));
         i++;
@@ -169,7 +169,7 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m6;
-    while (position.first + i >= 0)
+    while (position.first - i >= 0)
     {
         m6.push_back(new std::pair(position.first - i, position.second));
         i++;
@@ -178,7 +178,7 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m7;
-    while (position.first + i >= 0)
+    while (position.second + i < 8)
     {
         m7.push_back(new std::pair(position.first, position.second + i));
         i++;
@@ -187,7 +187,7 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m8;
-    while (position.first + i >= 0)
+    while (position.second - i >= 0)
     {
         m8.push_back(new std::pair(position.first, position.second - i));
         i++;
@@ -199,20 +199,20 @@ std::vector<std::vector<std::pair<int, int> *>>& D::Pmove()
 }
 
 
-D::D(std::pair<int, int> position, char color) : Pieces(position, color, 68)
+D::D(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 68, moved)
 {}
 
 
 
 //Pedone------------------------
-std::vector<std::vector<std::pair<int, int> *>>& P::Pmove()
+std::vector<std::vector<std::pair<int, int> *>> P::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> *>> Moves;
     std::vector<std::pair<int, int> *> tmp;
 
     int Col = 1;
 
-    if(Color = 'N')
+    if(Color == 'N')
         Col = -1;
 
     tmp.push_back(new std::pair(position.first + Col, position.second));
@@ -225,13 +225,13 @@ std::vector<std::vector<std::pair<int, int> *>>& P::Pmove()
     return Moves;
 }
 
-P::P(std::pair<int, int> position, char color) : Pieces(position, color, 80)
+P::P(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 80, moved)
 {}
 
 
 
 //Re------------------------
-std::vector<std::vector<std::pair<int, int> *>> & R::Pmove()
+std::vector<std::vector<std::pair<int, int> *>> R::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> *>> Moves;
     std::vector<std::pair<int, int> *> tmp;
@@ -253,19 +253,19 @@ std::vector<std::vector<std::pair<int, int> *>> & R::Pmove()
     return Moves;
 }
 
-R::R(std::pair<int, int> position, char color) : Pieces(position, color, 82)
+R::R(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 82, moved)
 {}
 
 
 
 //Torre------------------------
-std::vector<std::vector<std::pair<int, int> *>>& T::Pmove()
+std::vector<std::vector<std::pair<int, int> *>> T::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> *>> Moves;
-    int i = 0;
+    int i = 1;
 
     std::vector<std::pair<int, int> *> m1;
-    while (position.first + i >= 0)
+    while (position.first + i < 8)
     {
         m1.push_back(new std::pair(position.first + i, position.second));
         i++;
@@ -274,7 +274,7 @@ std::vector<std::vector<std::pair<int, int> *>>& T::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m2;
-    while (position.first + i >= 0)
+    while (position.first - i >= 0)
     {
         m2.push_back(new std::pair(position.first - i, position.second));
         i++;
@@ -283,7 +283,7 @@ std::vector<std::vector<std::pair<int, int> *>>& T::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m3;
-    while (position.first + i >= 0)
+    while (position.second + i < 8)
     {
         m3.push_back(new std::pair(position.first, position.second + i));
         i++;
@@ -292,7 +292,7 @@ std::vector<std::vector<std::pair<int, int> *>>& T::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> *> m4;
-    while (position.first + i >= 0)
+    while (position.second - i >= 0)
     {
         m4.push_back(new std::pair(position.first, position.second - i));
         i++;
@@ -303,5 +303,5 @@ std::vector<std::vector<std::pair<int, int> *>>& T::Pmove()
     return Moves;
 }
 
-T::T(std::pair<int, int> position, char color) : Pieces(position, color, 84)
+T::T(std::pair<int, int> position, char color, int moved) : Pieces(position, color, 84, moved)
 {}
