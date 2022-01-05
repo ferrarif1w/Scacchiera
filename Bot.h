@@ -1,19 +1,21 @@
-//Gallo Samuele 200155/104
-
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include "chessBoard.h"
 #include "Pieces.h"
-#include <algorithm>
 
-class Gallo //sio porco
+class Bot
 {
-    protected: //magari lo fosse stato il mio ano
 
+    protected:
 
+    char Name;
+    char Color;
+    ChessBoard* chessBoard;
 
+    public:
 
-    public: //come il mio ano
+    Bot(char Name, char Color, ChessBoard* chessBoard);
 
-
-
+    int BotMove();
 };
