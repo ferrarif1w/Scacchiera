@@ -19,7 +19,7 @@ class Pieces
         void SetMove(std::pair<int, int> NewPosition);
         std::pair<int, int> GetPosition();
 
-        char GetColor();
+        char GetColor(); 
         char GetName();
 
         int GetStatus();
