@@ -28,8 +28,12 @@ char ChessBoard::scanOccupied(pair<int, int>* pos) {
 }
 
 bool ChessBoard::scanPromotion(Pieces* piece) {
-    return (piece->GetName() == 80 && piece->GetPosition().first == 0 ||
-        piece->GetName() == 112 && piece->GetPosition().first == 7);
+    return (piece->GetName() == 'P' && piece->GetPosition().first == 0 ||
+        piece->GetName() == 'P' && piece->GetPosition().first == 7);
+}
+
+bool ChessBoard::scanCheck() {
+
 }
 
 bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
@@ -38,7 +42,7 @@ bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
     char n2 = p2->GetName();
     int row2 = p2->GetPosition().first;
     int row1 = p1->GetPosition().first;
-    return (row1 == row2 && (n2 == 80 && row2 == 4 || n2 == 112 && row2 == 3) &&
+    return (row1 == row2 && (n2 == 'P' && row2 == 4 || n2 == 'p' && row2 == 3) &&
         lastMove.piece == p2 && p2->GetStatus() == 1 && n1-n2 != 0);
 }
 
@@ -152,6 +156,15 @@ void ChessBoard::initializeRow(int row) {
     }
 }
 
+void ChessBoard::updateLog() {
+    fstream write(logFile);
+    pair<int, int> start = lastMove.piece->GetPosition();
+    pair<int, int> end = *lastMove.destination;
+    string out;
+    out += to_string(start.second) + to_string(start.first) + " ";
+    out += to_string(end.second) + to_string(end.first) + "\n";
+}
+
 ChessBoard::ChessBoard(string log) {
     for (int i = 0; i < 8; i++) board.push_back(vector<Pieces*>(8, nullptr));
     //inizializzare file
@@ -222,14 +235,16 @@ int ChessBoard::performMove(Move move) {
     switch (move.moveName) {
         case 0:
             break;
-        case 3: {   //arrocco corto
+        case 3:
+            {   //arrocco corto
                 Pieces* tower = move.additionalPiece; //colonna attuale: 7, col. destinazione: 5
                 pair<int, int> pos = tower->GetPosition();
                 board[pos.first][pos.second] = nullptr;
                 board[pos.first][pos.second-2] = tower;
                 break;
             }
-        case 4: {   //arrocco lungo
+        case 4:
+            {   //arrocco lungo
                 Pieces* tower = move.additionalPiece; //colonna attuale: 0, col. destinazione: 4
                 pair<int, int> pos = tower->GetPosition();
                 board[pos.first][pos.second] = nullptr;
@@ -243,6 +258,7 @@ int ChessBoard::performMove(Move move) {
             break;
     }
     lastMove = move;
+    updateLog();
     if (scanPromotion(piece)) {
         pieceToPromote = piece;
         return 1;
@@ -260,29 +276,66 @@ int ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, ch
     return performMove(*result);
 }
 
-void ChessBoard::performPromotion(Pieces* piece, char code) {
-    pair<int, int> pos = piece->GetPosition();
-    char color = piece->GetColor();
-    int moves = piece->GetStatus();
+void ChessBoard::performPromotion(char code) {
+    pair<int, int> pos = pieceToPromote->GetPosition();
+    char color = pieceToPromote->GetColor();
+    int moves = pieceToPromote->GetStatus();
     Pieces* newPiece;
     switch (code) {
-        case 65:    //alfiere
+        case 'A':    //alfiere
             newPiece = new A(pos, color, moves);
             break;
-        case 67:    //cavallo
+        case 'C':    //cavallo
             newPiece = new C(pos, color, moves);
             break;
-        case 68:    //regina
+        case 'D':    //regina
             newPiece = new D(pos, color, moves);
             break;
-        case 82:    //re
+        case 'R':    //re
             newPiece = new R(pos, color, moves);
             break;
-        case 84:    //torre
+        case 'T':    //torre
             newPiece = new T(pos, color, moves);
             break;
     }
     board[pos.first][pos.second] = newPiece;
-    *(find(piecesList.begin(), piecesList.end(), piece)) = newPiece;
-    delete piece;
+    *(find(piecesList.begin(), piecesList.end(), pieceToPromote)) = newPiece;
+    delete pieceToPromote;
+}
+
+void ChessBoard::justForDebug(string fileName) {
+    piecesList.clear();
+    vector<vector<Pieces*>> tmp;
+    string line;
+    ifstream reader(fileName);
+    Pieces* piece;
+    for (int i = 0; i < 8; i++) {
+        tmp.push_back(vector<Pieces*>(8, nullptr));
+        getline(reader, line);
+        for (int j = 0; j < 8; j++) {
+            if (line[j] != 0) {
+                int character = line[j];
+                char color = 'N';
+                if (character > 90) {
+                    character -= 32;
+                    color = 'B';
+                }
+                switch (line[j]) {
+                    case 'A':
+                        piece = new A(pair(i, j), color);
+                    case 'C':
+                        piece = new C(pair(i, j), color);
+                    case 'D':
+                        piece = new D(pair(i, j), color);
+                    case 'P':
+                        piece = new A(pair(i, j), color);
+                    case 'R':
+                        piece = new A(pair(i, j), color);
+                    case 'T':
+                        piece = new A(pair(i, j), color);
+                }
+                insertPiece(piece, new pair(i, j));
+            }
+        }
+    }
 }

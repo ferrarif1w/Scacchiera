@@ -1,8 +1,7 @@
 #ifndef CHESSBOARD_H
 #define CHESSBOARD_H
 
-#include <vector>
-#include <string>
+#include <bits/stdc++.h>
 #include "Pieces.h"
 using namespace std;
 
@@ -29,8 +28,11 @@ class ChessBoard {
         //metodo per giocatore: fornire posizioni
         //ritorna 1 se è possibile promozione, 0 se è scaccomatto, -1 altrimenti
         int performMove(pair<int, int> start, pair<int, int> destination, char color);
-        void performPromotion(Pieces* piece, char newPiece);
+        void performPromotion(char newPiece);
         string printBoard();
+        //TOGLIERLA ALLA FINE DI TUTTO
+        //importa board da file
+        void justForDebug(string fileName);
         class InvalidMoveException {};
         class InvalidPieceException {};
     private:
@@ -58,6 +60,7 @@ class ChessBoard {
         bool enPassantConditions(Pieces* p1, Pieces* p2);
         //ritorna moveName adatto (3 se corto, 4 se lungo, 0 se non si può fare)
         int castlingConditions(Pieces* king, Pieces* tower);
+        void updateLog();
 };
 //operatore di confronto per Move
 //controlla se pezzo e posizione di arrivo sono uguali
