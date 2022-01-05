@@ -22,13 +22,13 @@ class ChessBoard {
             Move();
         };
         ChessBoard(string log);
-        vector<Move*> movesAvailable(char color);
+        vector<Move> movesAvailable(char color);
         //metodo per computer: mossa tratta da vector<Move*> ritornato da movesAvailable
-        //pezzo da promuovere se promozione possibile
-        Pieces* performMove(Move* move);
+        //ritorna 1 se è possibile promozione, 0 se è scaccomatto, -1 altrimenti
+        int performMove(Move move);
         //metodo per giocatore: fornire posizioni
-        //pezzo da promuovere se promozione possibile
-        Pieces* performMove(pair<int, int> start, pair<int, int> destination, char color);
+        //ritorna 1 se è possibile promozione, 0 se è scaccomatto, -1 altrimenti
+        int performMove(pair<int, int> start, pair<int, int> destination, char color);
         void performPromotion(Pieces* piece, char newPiece);
         string printBoard();
         class InvalidMoveException {};
@@ -38,7 +38,7 @@ class ChessBoard {
         vector<vector<Pieces*>> board;
         //prima pezzi bianchi (pedoni per ultimi), poi pezzi neri (pedoni per ultimi)
         vector<Pieces*> piecesList;
-        Move* lastMove;
+        Move lastMove;
         string logFile;
         Pieces* pieceToPromote;
         const int SIZE = 8;
@@ -49,7 +49,7 @@ class ChessBoard {
         char scanOccupied(pair<int, int>* pos);
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int>* pos);
-        void scanAddSpecialMoves(vector<Move*>& moves, char color);
+        void scanAddSpecialMoves(vector<Move>& moves, char color);
         bool scanPromotion(Pieces* piece);
         bool scanCheck(pair<int, int>* pos);
         bool scanCheck();
