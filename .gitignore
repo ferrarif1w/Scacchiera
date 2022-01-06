@@ -3,3 +3,4 @@ test.exe
 headerTest.h
 headerTest.cpp
 .vscode/
+board.txt

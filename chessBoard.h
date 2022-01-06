@@ -10,14 +10,14 @@ class ChessBoard {
         //pezzo, destinazione, codice della mossa, eventuale pezzo aggiuntivo
         struct Move {
             Pieces* piece;
-            pair<int, int>* destination;
+            pair<int, int> destination;
             //0: mossa normale, 1: mossa normale con cattura,
             //2: en passant, 3: arrocco corto, 4: arrocco lungo
             int moveName;
             //pezzo cattuarto   se moveName = 1,2
             //torre mossa       se moveName = 3,4
             Pieces* additionalPiece;
-            Move(Pieces* p, pair<int, int>* dest, int name, Pieces* add);
+            Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
             Move();
         };
         ChessBoard(string log);
@@ -34,7 +34,7 @@ class ChessBoard {
         //importa board da file
         void justForDebug(string fileName);
         class InvalidMoveException {};
-        class InvalidPieceException {};
+        class InvalidInputException {};
     private:
         //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
@@ -44,11 +44,13 @@ class ChessBoard {
         string logFile;
         Pieces* pieceToPromote;
         const int SIZE = 8;
-        bool scanBoundaries(pair<int, int>* pos);
+        bool legitMoveInput(pair<int, int>& x);
+        bool scanBoundaries(pair<int, int>& pos);
         bool scanBoundaries(int row, int column);
         //se casella occupata, ritorna colore del pezzo presente
         //altrimenti, ritorna 0
-        char scanOccupied(pair<int, int>* pos);
+        char scanOccupied(pair<int, int>& pos);
+        char scanOccupied(int row, int column);
         void initializeRow(int row);
         void insertPiece(Pieces* piece, pair<int, int>* pos);
         void scanAddSpecialMoves(vector<Move>& moves, char color);
@@ -58,8 +60,8 @@ class ChessBoard {
         bool scanCheckMate();
         //p1 = pedone che cattura, p2 = pedone che viene catturato
         bool enPassantConditions(Pieces* p1, Pieces* p2);
-        //ritorna moveName adatto (3 se corto, 4 se lungo, 0 se non si può fare)
-        int castlingConditions(Pieces* king, Pieces* tower);
+        //true se possibile arrocco, tipo di arrocco determinato da chiamante
+        bool castlingConditions(Pieces* king, Pieces* tower);
         void updateLog();
 };
 //operatore di confronto per Move
