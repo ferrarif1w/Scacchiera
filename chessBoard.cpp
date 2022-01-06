@@ -44,9 +44,97 @@ bool ChessBoard::scanPromotion(Pieces* piece) {
         piece->GetName() == 'P' && piece->GetPosition().first == 7);
 }
 
-/*bool ChessBoard::scanCheck() {
+bool ChessBoard::scanCheck(char color) {
+    int offset = 0;
+    if (color == 'N') offset = SIZE*2;
 
+    Pieces* king = piecesList[4+offset];
+    vector<Move> adv;
+    if (color == 'N') adv = movesAvailable('B');
+    else adv = movesAvailable('N');
+    for (int i = 0; i < adv.size(); i++) {
+        if (adv[i].moveName == 1 && adv[i].additionalPiece == king) return true;
+    }
+    return false;
+}
+
+bool ChessBoard::scanCheck(int row, int column, char color) {
+    pair<int, int> pos = pair(row, column);
+    vector<Move> adv;
+    if (color == 'N') adv = movesAvailable('B');
+    else adv = movesAvailable('N');
+    for (int i = 0; i < adv.size(); i++) {
+        if (adv[i].destination == pos) return true;
+    }
+    return false;
+}
+
+bool ChessBoard::scanCheck(Move& move, char color) {
+    vector<vector<Pieces*>> oldBoard = board;
+    Pieces* piece = move.piece;
+    pair<int, int> start = move.piece->GetPosition();
+    pair<int, int> end = move.destination;
+    board[end.first][end.second] = piece;
+    board[start.first][start.second] = nullptr;
+    switch (move.moveName) {
+        case 0:
+            break;
+        case 3: {   //arrocco corto
+                Pieces* tower = move.additionalPiece; //colonna attuale: 7, col. destinazione: 5
+                pair<int, int> pos = tower->GetPosition();
+                board[pos.first][pos.second] = nullptr;
+                board[pos.first][pos.second-2] = tower;
+                break;
+            }
+        case 4: {   //arrocco lungo
+                Pieces* tower = move.additionalPiece; //colonna attuale: 0, col. destinazione: 4
+                pair<int, int> pos = tower->GetPosition();
+                board[pos.first][pos.second] = nullptr;
+                board[pos.first][pos.second+3] = tower;
+                break;
+            }
+    }
+    bool result = scanCheck(color);
+    board = oldBoard;
+    return result;
+}
+
+/*bool ChessBoard::scanCheckMate(vector<Move>& moves, char color) {
+    vector<vector<Pieces*>> oldBoard = board;
+    for (int i = 0; i < moves.size(); i++) {
+        Move move = moves[i];
+        Pieces* piece = move.piece;
+        pair<int, int> start = move.piece->GetPosition();
+        pair<int, int> end = move.destination;
+        board[end.first][end.second] = piece;
+        board[start.first][start.second] = nullptr;
+        switch (move.moveName) {
+            case 0:
+                break;
+            case 3: {   //arrocco corto
+                    Pieces* tower = move.additionalPiece; //colonna attuale: 7, col. destinazione: 5
+                    pair<int, int> pos = tower->GetPosition();
+                    board[pos.first][pos.second] = nullptr;
+                    board[pos.first][pos.second-2] = tower;
+                    break;
+                }
+            case 4: {   //arrocco lungo
+                    Pieces* tower = move.additionalPiece; //colonna attuale: 0, col. destinazione: 4
+                    pair<int, int> pos = tower->GetPosition();
+                    board[pos.first][pos.second] = nullptr;
+                    board[pos.first][pos.second+3] = tower;
+                    break;
+                }
+        }
+        if (scanCheck(color)) return true;
+        board = oldBoard;
+    }
+    return false;
 }*/
+
+bool ChessBoard::scanCheckMate(bool initialCheck, vector<Move>& moves) {
+    return initialCheck && moves.size() == 0;
+}
 
 bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
     if (!p2) return false;  //controlla se esiste pezzo
@@ -65,12 +153,14 @@ bool ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
     int finish = tower->GetPosition().second;
     int row = king->GetPosition().first;
     int tmp = tower->GetPosition().first;
+    char color = king->GetName();
     if (row != tmp) return 0; //DA TOGLIERE INSIEME A JUSTFORDEBUG
     int factor;
     if (start < finish) factor = 1;
     else factor = -1;
     for (int i = 1; i < abs(start-finish); i++) {
-        if (scanOccupied(row, start + i*factor) != 0) return false;
+        if (scanOccupied(row, start + i*factor) != 0 && scanCheck(row, start + i*factor, color))
+            return false;
     }
     return true;
 }
@@ -203,10 +293,14 @@ string ChessBoard::printBoard() {
     return out;
 }
 
+int ChessBoard::getCondition() {return condition;}
+
 vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     vector<Move> moves;
     int start = 0;
     if (color == 'N') start = SIZE*2;
+    bool initialCheck = false;
+    if (scanCheck(color)) initialCheck = true;
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
         if (!piece) continue;
@@ -226,12 +320,17 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
                     moveName++;
                     additionalPiece = board[destination.first][destination.second];
                 }
-                moves.push_back(Move(piece, destination, moveName, additionalPiece));
+                Move move = Move(piece, destination, moveName, additionalPiece);
+                if (!scanCheck(move, color)) 
+                    moves.push_back(Move(piece, destination, moveName, additionalPiece));
                 if (occ != 0 && pieceMoves.size() > 1) break;
             }
         }
     }
     scanAddSpecialMoves(moves, color);
+    if (scanCheckMate(initialCheck, moves)) condition = 0;
+    else if (scanCheck(color)) condition = 1;
+    else if (moves.size() == 0) condition = 2;
     return moves;
 }
 
@@ -245,8 +344,7 @@ int ChessBoard::performMove(Move move) {
     switch (move.moveName) {
         case 0:
             break;
-        case 3:
-            {   //arrocco corto
+        case 3: {   //arrocco corto
                 Pieces* tower = move.additionalPiece; //colonna attuale: 7, col. destinazione: 5
                 pair<int, int> pos = tower->GetPosition();
                 tower->SetMove(pair(pos.first, pos.second-2));
@@ -254,8 +352,7 @@ int ChessBoard::performMove(Move move) {
                 board[pos.first][pos.second-2] = tower;
                 break;
             }
-        case 4:
-            {   //arrocco lungo
+        case 4: {   //arrocco lungo
                 Pieces* tower = move.additionalPiece; //colonna attuale: 0, col. destinazione: 4
                 pair<int, int> pos = tower->GetPosition();
                 tower->SetMove(pair(pos.first, pos.second+3));
@@ -270,14 +367,12 @@ int ChessBoard::performMove(Move move) {
             break;
     }
     lastMove = move;
-    /*updateLog();
+    //updateLog();
     if (scanPromotion(piece)) {
         pieceToPromote = piece;
-        return 1;
+        return true;
     }
-    if (scanCheckMate()) return 0;
-    else return -1;*/
-    return -1;
+    return false;
 }
 
 int ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {

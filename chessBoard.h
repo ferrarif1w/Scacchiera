@@ -23,18 +23,19 @@ class ChessBoard {
         ChessBoard(string log);
         vector<Move> movesAvailable(char color);
         //metodo per computer: mossa tratta da vector<Move*> ritornato da movesAvailable
-        //ritorna 1 se è possibile promozione, 0 se è scaccomatto, -1 altrimenti
+        //ritorna true se è possibile promozione, false altrimenti
         int performMove(Move move);
         //metodo per giocatore: fornire posizioni
-        //ritorna 1 se è possibile promozione, 0 se è scaccomatto, -1 altrimenti
+        //ritorna true se è possibile promozione, false altrimenti
         int performMove(pair<int, int> start, pair<int, int> destination, char color);
         void performPromotion(char newPiece);
         string printBoard();
+        int getCondition();
         //TOGLIERLA ALLA FINE DI TUTTO
         //importa board da file
         void justForDebug(string fileName);
-        class InvalidMoveException {};
         class InvalidInputException {};
+        class InvalidMoveException {};
     private:
         //ogni vettore rappresenta una riga
         vector<vector<Pieces*>> board;
@@ -43,6 +44,8 @@ class ChessBoard {
         Move lastMove;
         string logFile;
         Pieces* pieceToPromote;
+        //0 se in scaccomatto, 1 se scacco, 2 se non più mosse regolari
+        int condition = -1;
         const int SIZE = 8;
         bool legitMoveInput(pair<int, int>& x);
         bool scanBoundaries(pair<int, int>& pos);
@@ -55,9 +58,11 @@ class ChessBoard {
         void insertPiece(Pieces* piece, pair<int, int>* pos);
         void scanAddSpecialMoves(vector<Move>& moves, char color);
         bool scanPromotion(Pieces* piece);
-        bool scanCheck(pair<int, int>* pos);
-        bool scanCheck();
-        bool scanCheckMate();
+        bool scanCheck(int row, int column, char color);
+        bool scanCheck(char color);
+        bool scanCheck(Move& move, char color);
+        //bool scanCheckMate(vector<Move>& moves, char color);
+        bool scanCheckMate(bool initialCheck, vector<Move>& moves);
         //p1 = pedone che cattura, p2 = pedone che viene catturato
         bool enPassantConditions(Pieces* p1, Pieces* p2);
         //true se possibile arrocco, tipo di arrocco determinato da chiamante
