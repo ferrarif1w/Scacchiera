@@ -388,6 +388,6 @@ void ChessBoard::justForDebug(string fileName) {
     }
     startIndex = 24;
     for (int i = 0; i < whitePawns.size(); i++) {
-        piecesList[startIndex+i] = whitePawns[i];
+        piecesList[startIndex+i] = blackPawns[i];
     }
 }
