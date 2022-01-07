@@ -139,44 +139,11 @@ bool ChessBoard::scanCheck(Move& move, char color) {
     }
     bool result;
     if (piece->GetName() == 'R' || piece->GetName() == 'r') 
-        result = scanCheck(end.first, end.second, color);
+        result = scanCheck(color, end.first, end.second);
     else result = scanCheck(color);
     board = oldBoard;
     return result;
 }
-
-/*bool ChessBoard::scanCheckMate(vector<Move>& moves, char color) {
-    vector<vector<Pieces*>> oldBoard = board;
-    for (int i = 0; i < moves.size(); i++) {
-        Move move = moves[i];
-        Pieces* piece = move.piece;
-        pair<int, int> start = move.piece->GetPosition();
-        pair<int, int> end = move.destination;
-        board[end.first][end.second] = piece;
-        board[start.first][start.second] = nullptr;
-        switch (move.moveName) {
-            case 0:
-                break;
-            case 3: {   //arrocco corto
-                    Pieces* tower = move.additionalPiece; //colonna attuale: 7, col. destinazione: 5
-                    pair<int, int> pos = tower->GetPosition();
-                    board[pos.first][pos.second] = nullptr;
-                    board[pos.first][pos.second-2] = tower;
-                    break;
-                }
-            case 4: {   //arrocco lungo
-                    Pieces* tower = move.additionalPiece; //colonna attuale: 0, col. destinazione: 4
-                    pair<int, int> pos = tower->GetPosition();
-                    board[pos.first][pos.second] = nullptr;
-                    board[pos.first][pos.second+3] = tower;
-                    break;
-                }
-        }
-        if (scanCheck(color)) return true;
-        board = oldBoard;
-    }
-    return false;
-}*/
 
 bool ChessBoard::scanCheckMate(bool initialCheck, vector<Move>& moves) {
     return initialCheck && moves.size() == 0;
@@ -379,8 +346,8 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
         }
     }
     scanAddSpecialMoves(moves, color);
-    if (scanCheck(color)) condition = 1;
-    else if (scanCheckMate(initialCheck, moves)) condition = 0;
+    if (scanCheckMate(initialCheck, moves)) condition = 0;
+    else if (scanCheck(color)) condition = 1;
     else if (moves.size() == 0) condition = 2;
     return moves;
 }
