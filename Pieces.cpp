@@ -43,13 +43,13 @@ char Pieces::GetName()
 
 
 //Alfiere------------------------
-std::vector<std::vector<std::pair<int, int> >> A::Pmove() //vector<vector<pair<int, int>>>
+std::vector<std::vector<std::pair<int, int> >> A::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> >> Moves;
     int i=1;
 
     std::vector<std::pair<int, int> > m1;
-    while (position.first + i < 8 && position.second + i < 8) //genera un vettore
+    while (position.first + i < 8 && position.second + i < 8)
         {
             m1.push_back(std::pair(position.first + i, position.second + i));
             i++;
@@ -58,7 +58,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove() //vector<vector<pair<i
     i = 1;
 
     std::vector<std::pair<int, int> > m2;
-    while (position.first + i < 8 && position.second - i >= 0) //genera un vettore
+    while (position.first + i < 8 && position.second - i >= 0)
     {
         m2.push_back(std::pair(position.first + i, position.second - i));
         i++;
@@ -67,7 +67,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove() //vector<vector<pair<i
     i = 1;
 
     std::vector<std::pair<int, int> > m3;
-    while (position.first - i >= 0 && position.second + i < 8) //genera un vettore
+    while (position.first - i >= 0 && position.second + i < 8)
     {
         m3.push_back(std::pair(position.first - i, position.second + i));
         i++;
@@ -76,7 +76,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove() //vector<vector<pair<i
     i = 1;
 
     std::vector<std::pair<int, int> > m4;
-    while (position.first - i >= 0 && position.second - i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second - i >= 0)
     {
         m4.push_back(std::pair(position.first - i, position.second - i));
         i++;
@@ -122,7 +122,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     int i = 1;
 
     std::vector<std::pair<int, int> > m1;
-    while (position.first + i < 8 && position.second + i < 8) //genera un vettore
+    while (position.first + i < 8 && position.second + i < 8) 
     {
         m1.push_back(std::pair(position.first + i, position.second + i));
         i++;
@@ -131,7 +131,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> > m2;
-    while (position.first + i < 8 && position.second - i >= 0) //genera un vettore
+    while (position.first + i < 8 && position.second - i >= 0) 
     {
         m2.push_back(std::pair(position.first + i, position.second - i));
         i++;
@@ -140,7 +140,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> > m3;
-    while (position.first - i >= 0 && position.second + i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second + i >= 0) 
     {
         m3.push_back(std::pair(position.first - i, position.second + i));
         i++;
@@ -149,7 +149,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     i = 1;
 
     std::vector<std::pair<int, int> > m4;
-    while (position.first - i >= 0 && position.second - i >= 0) //genera un vettore
+    while (position.first - i >= 0 && position.second - i >= 0) 
     {
         m4.push_back(std::pair(position.first - i, position.second - i));
         i++;
