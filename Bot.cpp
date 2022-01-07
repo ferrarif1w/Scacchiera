@@ -14,12 +14,33 @@ int Bot::BotMove()
 {
 
     vector<ChessBoard::Move> v1 = chessBoard->movesAvailable(Color);
+    switch (chessBoard.getCondition())
+    {
+        case 0:
+        
+            return 0;
+        
+        break;
+    
+        case 1:
+
+            return 1;
+
+        break;
+
+        case 2:
+
+            return 2;
+
+        break;
+    }
 
     int m = rand() % v1.size();
 
-    //ritorna 1 se è possibile promozione, 0 se è scaccomatto, -1 altrimenti
-    int m1 = chessBoard->performMove(v1[m]);
+    if (chessBoard->performMove(v1[m]))
+    {
+        m = rand() % 4;
 
-    if (m1 = 1)
-        chessBoard->performPromotion(piece, newPiece);
+        chessBoard->performPromotion(P[m]);
+    }
 }
