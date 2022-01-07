@@ -60,6 +60,7 @@ bool ChessBoard::scanCheck(char color, int row, int column) {
         int i = 1;
         while (scanBoundaries(tmp)) {
             char pieceColor = scanOccupied(tmp);
+            char pieceName;
             if (pieceColor != 0) {
                 if (pieceColor == color) break;
                 char pieceName = board[tmp.first][tmp.second]->GetName();
@@ -144,13 +145,15 @@ bool ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
     int finish = tower->GetPosition().second;
     int row = king->GetPosition().first;
     int tmp = tower->GetPosition().first;
-    char color = king->GetName();
+    char color = king->GetColor();
     if (row != tmp) return 0; //DA TOGLIERE INSIEME A JUSTFORDEBUG
     int factor;
     if (start < finish) factor = 1;
     else factor = -1;
+    if (scanCheck(color)) return false;
     for (int i = 1; i < abs(start-finish); i++) {
-        if (scanOccupied(row, start + i*factor) != 0 && scanCheck(row, start + i*factor, color))
+        Move tmp = Move(king, pair(row, start + i*factor), 0);
+        if (scanOccupied(row, start + i*factor) != 0 || scanCheck(tmp, color))
             return false;
     }
     return true;
@@ -176,37 +179,38 @@ void ChessBoard::scanAddSpecialMoves(vector<Move>& moves, char color) {
     int direction;
     if (color == 'B') direction = 1;
     else direction = -1;
+    Move tmp;
     for (int i = 0; i < SIZE; i++) {
         Pieces* pawn = piecesList[8+i+offset];
         if (!pawn || (pawn->GetName() != 80 && pawn->GetName() != 112)) continue;
         pair<int, int> pos = pawn->GetPosition();
         if (scanBoundaries(pos.first, pos.second-direction)) {
             Pieces* toTheLeft = board[pos.first][pos.second-direction];
-            if (enPassantConditions(pawn, toTheLeft)) {
-                pair<int, int> destination = pair(pos.first + direction, pos.second - direction);
-                moves.push_back(Move(pawn, destination, 2, toTheLeft));
-            }
+            pair<int, int> destination = pair(pos.first + direction, pos.second - direction);
+            tmp = Move(pawn, destination, 2, toTheLeft);
+            if (enPassantConditions(pawn, toTheLeft) && !scanCheck(tmp, color))
+                moves.push_back(tmp);
         }
         if (scanBoundaries(pos.first, pos.second+direction)) {
             Pieces* toTheRight = board[pos.first][pos.second+direction];
-            if (enPassantConditions(pawn, toTheRight)) {
-                pair<int, int> destination = pair(pos.first + direction, pos.second + direction);
-                moves.push_back(Move(pawn, destination, 2, toTheRight));
-            }
+            pair<int, int> destination = pair(pos.first + direction, pos.second + direction);
+            tmp = Move(pawn, destination, 2, toTheRight);
+            if (enPassantConditions(pawn, toTheRight) && !scanCheck(tmp, color))
+                moves.push_back(tmp);
         }
         if (scanBoundaries(pos.first+direction, pos.second-direction)) {
             Pieces* forwardLeft = board[pos.first+direction][pos.second-direction];
-            if (forwardLeft && forwardLeft->GetColor() != color) {
-                pair<int, int> destination = pair(pos.first + direction, pos.second - direction);
-                moves.push_back(Move(pawn, destination, 1, forwardLeft));
-            }
+            pair<int, int> destination = pair(pos.first + direction, pos.second - direction);
+            tmp = Move(pawn, destination, 1, forwardLeft);
+            if (forwardLeft && forwardLeft->GetColor() != color && !scanCheck(tmp, color))
+                moves.push_back(tmp);
         }
         if (scanBoundaries(pos.first+direction, pos.second+direction)) {
             Pieces* forwardRight = board[pos.first+direction][pos.second+direction];
-            if (forwardRight && forwardRight->GetColor() != color) {
-                pair<int, int> destination = pair(pos.first + direction, pos.second + direction);
-                moves.push_back(Move(pawn, destination, 1, forwardRight));
-            }
+            pair<int, int> destination = pair(pos.first + direction, pos.second + direction);
+            tmp = Move(pawn, destination, 1, forwardRight);
+            if (forwardRight && forwardRight->GetColor() != color && !scanCheck(tmp, color))
+                moves.push_back(tmp);
         }
     }
 }
@@ -269,8 +273,8 @@ ChessBoard::ChessBoard(string log) {
     //inizializzare file
     initializeRow(0);
     initializeRow(1);
-    initializeRow(6);
     initializeRow(7);
+    initializeRow(6);
     lastMove = Move();
     pieceToPromote = nullptr;
     logFile = log;
@@ -293,6 +297,11 @@ string ChessBoard::printBoard() {
 }
 
 int ChessBoard::getCondition() {return condition;}
+
+int ChessBoard::getCondition(char color) {
+    humanPlayerMoves = movesAvailable(color);
+    return condition;
+}
 
 vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     vector<Move> moves;
@@ -374,12 +383,11 @@ bool ChessBoard::performMove(Move move) {
 }
 
 bool ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
-    vector<Move> moves = movesAvailable(color);
     if (!(legitMoveInput(start) && legitMoveInput(start))) throw InvalidInputException();
     Pieces* piece = board[start.first][start.second];
     Move tmpMove = Move(piece, destination, 0, nullptr);
-    auto result = find(moves.begin(), moves.end(), tmpMove);
-    if (result == moves.end()) throw InvalidMoveException();
+    auto result = find(humanPlayerMoves.begin(), humanPlayerMoves.end(), tmpMove);
+    if (result == humanPlayerMoves.end()) throw InvalidMoveException();
     return performMove(*result);
 }
 
@@ -460,8 +468,8 @@ void ChessBoard::justForDebug(string fileName) {
                         break;
                     case 'T':
                         piece = new T(pair(i, j), color);
-                        if (j == 0) index += 0;
-                        else if (j == 7) index += 7;
+                        if ((color == 'N' && i == 7 || color == 'B' && i == 0) && j == 0) index += 0;
+                        else if ((color == 'N' && i == 7 || color == 'B' && i == 0) && j == 7) index += 7;
                         else if (!piecesList[index]) index += 0;
                         else if (!piecesList[index+7]) index += 7;
                         else index = -1;
