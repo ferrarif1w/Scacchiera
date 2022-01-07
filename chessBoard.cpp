@@ -43,17 +43,6 @@ bool ChessBoard::scanPromotion(Pieces* piece) {
 }
 
 bool ChessBoard::scanCheck(char color, int row, int column) {
-    /*int offset = 0;
-    if (color == 'N') offset = SIZE*2;
-
-    Pieces* king = piecesList[4+offset];
-    vector<Move> adv;
-    if (color == 'N') adv = movesAvailable('B', false);
-    else adv = movesAvailable('N', false);
-    for (int i = 0; i < adv.size(); i++) {
-        if (adv[i].moveName == 1 && adv[i].additionalPiece == king) return true;
-    }
-    return false;*/
     int offset = 0;
     if (color == 'N') offset = SIZE*2;
     
@@ -100,17 +89,6 @@ bool ChessBoard::scanCheck(char color, int row, int column) {
     }
     return false;
 }
-
-/*bool ChessBoard::scanCheck(int row, int column, char color) {
-    pair<int, int> pos = pair(row, column);
-    vector<Move> adv;
-    if (color == 'N') adv = movesAvailable('B', false);
-    else adv = movesAvailable('N', false);
-    for (int i = 0; i < adv.size(); i++) {
-        if (adv[i].destination == pos) return true;
-    }
-    return false;
-}*/
 
 bool ChessBoard::scanCheck(Move& move, char color) {
     vector<vector<Pieces*>> oldBoard = board;
