@@ -137,7 +137,10 @@ bool ChessBoard::scanCheck(Move& move, char color) {
                 break;
             }
     }
-    bool result = scanCheck(color);
+    bool result;
+    if (piece->GetName() == 'R' || piece->GetName() == 'r') 
+        result = scanCheck(end.first, end.second, color);
+    else result = scanCheck(color);
     board = oldBoard;
     return result;
 }
@@ -531,7 +534,7 @@ void ChessBoard::justForDebug(string fileName) {
         piecesList[startIndex+i] = whitePawns[i];
     }
     startIndex = 24;
-    for (int i = 0; i < whitePawns.size(); i++) {
+    for (int i = 0; i < blackPawns.size(); i++) {
         piecesList[startIndex+i] = blackPawns[i];
     }
 }
