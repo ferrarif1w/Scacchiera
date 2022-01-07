@@ -270,7 +270,8 @@ void ChessBoard::initializeRow(int row) {
 }
 
 void ChessBoard::updateLog(pair<int, int> start, pair<int, int> end) {
-    ofstream write(logFile);
+    ofstream write;
+    write.open(logFile, ofstream::app);
     string out;
     out += to_string(start.second) + to_string(start.first) + " ";
     out += to_string(end.second) + to_string(end.first) + "\n";
@@ -280,6 +281,7 @@ void ChessBoard::updateLog(pair<int, int> start, pair<int, int> end) {
 
 void ChessBoard::updateLog(char newPiece) {
     ofstream write(logFile);
+    write.open(logFile, ofstream::app);
     write << newPiece << "\n";
     write.close();
 }
