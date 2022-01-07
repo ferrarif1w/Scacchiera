@@ -68,6 +68,7 @@ bool ChessBoard::scanCheck(char color, int row, int column) {
         pair<int, int> direction = it->first;
         string pieces = it->second;
         pair<int, int> tmp = pair(pos.first+direction.first, pos.second+direction.second);
+        int i = 1;
         while (scanBoundaries(tmp)) {
             char pieceColor = scanOccupied(tmp);
             if (pieceColor != 0) {
@@ -75,10 +76,14 @@ bool ChessBoard::scanCheck(char color, int row, int column) {
                 char pieceName = board[tmp.first][tmp.second]->GetName();
                 if (pieceName > 90) pieceName -= 32;
                 auto searchResult = find(pieces.begin(), pieces.end(), pieceName);
-                if (searchResult != pieces.end()) return true;
+                if (searchResult != pieces.end() || ((pieceName == 'P' || pieceName == 'R') && 
+                    i == 1)) return true;
+                
+                else break;
             }
             tmp.first += direction.first;
             tmp.second += direction.second;
+            i++;
         }
     }
     for (int i = 0; i < directionsHorse.size(); i++) {
@@ -343,8 +348,7 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     vector<Move> moves;
     int start = 0;
     if (color == 'N') start = SIZE*2;
-    bool initialCheck = false;
-    if (scanCheck(color)) initialCheck = true;
+    bool initialCheck = scanCheck(color);
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
         if (!piece) continue;
