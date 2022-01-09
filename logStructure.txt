@@ -1,4 +1,5 @@
 Impostazione del log:
+- prima riga: "B: " + nome giocatore con bianco + " N: " + nome giocatore con nero
 - lista di mosse, espresse con casella di partenza e di arrivo (una riga per mossa)
 - file finisce con scritta "end: " + B/N + " wins"
 - se dopo mossa avviene promozione, 

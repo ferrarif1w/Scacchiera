@@ -255,8 +255,8 @@ void ChessBoard::updateLog(pair<int, int> start, pair<int, int> end) {
     ofstream write;
     write.open(logFile, ofstream::app);
     string out;
-    out += to_string(start.second) + to_string(start.first) + " ";
-    out += to_string(end.second) + to_string(end.first) + "\n";
+    out += to_string(start.first) + to_string(start.second) + " ";
+    out += to_string(end.first) + to_string(end.second) + "\n";
     write << out;
     write.close();
 }
@@ -264,11 +264,11 @@ void ChessBoard::updateLog(pair<int, int> start, pair<int, int> end) {
 void ChessBoard::updateLog(char newPiece) {
     ofstream write(logFile);
     write.open(logFile, ofstream::app);
-    write << newPiece << "\n";
+    write << "p " << newPiece << "\n";
     write.close();
 }
 
-ChessBoard::ChessBoard(string log) {
+ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
     for (int i = 0; i < 8; i++) board.push_back(vector<Pieces*>(8, nullptr));
     //inizializzare file
     initializeRow(0);
@@ -278,6 +278,7 @@ ChessBoard::ChessBoard(string log) {
     lastMove = Move();
     pieceToPromote = nullptr;
     logFile = log;
+
 }
 
 string ChessBoard::printBoard() {
@@ -338,6 +339,7 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     if (scanCheckMate(initialCheck, moves)) condition = 0;
     else if (scanCheck(color)) condition = 1;
     else if (moves.size() == 0) condition = 2;
+    else condition = -1;
     return moves;
 }
 
