@@ -20,7 +20,7 @@ class ChessBoard {
             Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
             Move();
         };
-        ChessBoard(string log, string playerBlack, string playerWhite);
+        ChessBoard(string log = "", string playerBlack = "", string playerWhite = "");
         /*ritorna vettore con tutte le mosse possibili*/
         vector<Move> movesAvailable(char color);
         /*metodo per computer: mossa tratta da vector<Move> ritornato da movesAvailable

@@ -66,7 +66,7 @@ bool ChessBoard::scanCheck(char color, int row, int column) {
                 char pieceName = board[tmp.first][tmp.second]->GetName();
                 if (pieceName > 90) pieceName -= 32;
                 auto searchResult = find(pieces.begin(), pieces.end(), pieceName);
-                if (searchResult != pieces.end() || ((pieceName == 'P' || pieceName == 'R') && 
+                if (searchResult != pieces.end() && ((pieceName != 'P' && pieceName != 'R') || 
                     i == 1)) return true;
                 
                 else break;
@@ -278,22 +278,29 @@ ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
     lastMove = Move();
     pieceToPromote = nullptr;
     logFile = log;
-
+    if (log != "" && playerBlack != "" && playerWhite != "") {
+        ofstream write(logFile);
+        string playerRow = "B: " + playerWhite + " N: " + playerBlack + "\n";
+        write << playerRow;
+        write.close();
+    }
 }
 
 string ChessBoard::printBoard() {
     string out = "";
+    out += "  ---------------------------------\n";
     for (int i = 7; i >= 0; i--) {
         out += to_string(i+1);
-        out += " ";
+        out += " | ";
         for (int j = 0; j < 8; j++) {
             if (board[i][j] != nullptr) out += board[i][j]->GetName();
             else out += " ";
+            out += " | ";
         }
         out += "\n";
+        out += "  ---------------------------------\n";
     }
-    out += "\n";
-    out += "  ABCDEFGH";
+    out += "    A   B   C   D   E   F   G   H";
     return out;
 }
 
@@ -376,7 +383,7 @@ bool ChessBoard::performMove(Move move) {
             break;
     }
     lastMove = move;
-    updateLog(start, destination);
+    if (logFile != "") updateLog(start, destination);
     if (scanPromotion(piece)) {
         pieceToPromote = piece;
         return true;
@@ -418,7 +425,7 @@ void ChessBoard::performPromotion(char code) {
     board[pos.first][pos.second] = newPiece;
     *(find(piecesList.begin(), piecesList.end(), pieceToPromote)) = newPiece;
     delete pieceToPromote;
-    updateLog(code);
+    if (logFile != "") updateLog(code);
 }
 
 void ChessBoard::justForDebug(string fileName) {
