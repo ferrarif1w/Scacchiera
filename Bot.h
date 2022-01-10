@@ -1,8 +1,4 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
 #include "chessBoard.h"
-#include "Pieces.h"
 
 class Bot
 {
