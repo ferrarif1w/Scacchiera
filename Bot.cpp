@@ -1,5 +1,4 @@
 #include "Bot.h"
-#include <cstdlib>
 
     Bot::Bot(char n, char c, ChessBoard *B)
 {
