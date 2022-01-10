@@ -9,29 +9,16 @@
 
 }
 
-int Bot::BotMove()
+string Bot::BotMove()
 {
 
     vector<ChessBoard::Move> v1 = chessBoard->movesAvailable(Color);
-    switch (chessBoard->getCondition())
+
+    int Cond = chessBoard->getCondition();
+
+    if(Cond == 0 || Cond == 2)
     {
-        case 0:
-        
-            return 0;
-        
-        break;
-    
-        case 1:
-
-            return 1;
-
-        break;
-
-        case 2:
-
-            return 2;
-
-        break;
+        return to_string("N" + Cond);
     }
 
     int m = rand() % v1.size();
@@ -41,5 +28,9 @@ int Bot::BotMove()
         m = rand() % 4;
 
         chessBoard->performPromotion(P[m]);
+
+        return to_string(P[m] + Cond;)
     }
+
+    return to_string("N" + Cond);
 }
