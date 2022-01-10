@@ -8,7 +8,7 @@ class Bot
     char Name;
     char Color;
     ChessBoard* chessBoard;
-    char P[4] {A, T, C, R};
+    char P[4] {'A', 'T', 'C', 'R'};
 
     public:
 
