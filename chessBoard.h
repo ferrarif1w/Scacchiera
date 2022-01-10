@@ -48,7 +48,7 @@ class ChessBoard {
         Move lastMove;
         string logFile;
         Pieces* pieceToPromote;
-        /*0 se in scaccomatto, 1 se scacco, 2 se non più mosse regolari*/
+        /*0 se in scaccomatto, 1 se scacco, 2 se non più mosse regolari, 3 altrimenti*/
         int condition = -1;
         /*vettore contenente le mosse disponibili a un giocatore umano*/
         vector<Move> humanPlayerMoves;
