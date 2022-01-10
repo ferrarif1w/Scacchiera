@@ -14,7 +14,7 @@ int Bot::BotMove()
 {
 
     vector<ChessBoard::Move> v1 = chessBoard->movesAvailable(Color);
-    switch (chessBoard.getCondition())
+    switch (chessBoard->getCondition())
     {
         case 0:
         

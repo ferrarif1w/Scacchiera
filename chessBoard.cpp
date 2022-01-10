@@ -39,7 +39,7 @@ char ChessBoard::scanOccupied(int row, int column) {
 
 bool ChessBoard::scanPromotion(Pieces* piece) {
     return (piece->GetName() == 'P' && piece->GetPosition().first == 0 ||
-        piece->GetName() == 'P' && piece->GetPosition().first == 7);
+        piece->GetName() == 'p' && piece->GetPosition().first == 7);
 }
 
 bool ChessBoard::scanCheck(char color, int row, int column) {
@@ -328,10 +328,10 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
                 Pieces* additionalPiece = nullptr;
                 int moveName = 0;
                 char occ = scanOccupied(destination);
-                if (occ == color && pieceMoves.size() > 1) break;
+                if (occ != 0 && (piece->GetName() == 80 || piece->GetName() == 112)) break;
+                else if (occ == color && pieceMoves.size() > 1) break;
                 else if (occ == color && pieceMoves.size() == 1) continue;
                 else if (occ != color && occ != 0) { //ovvero occ = colore avversario
-                    if (piece->GetName() == 80 || piece->GetName() == 112) continue;
                     moveName++;
                     additionalPiece = board[destination.first][destination.second];
                 }
@@ -351,6 +351,7 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
 }
 
 bool ChessBoard::performMove(Move move) {
+    pieceToPromote = nullptr;
     Pieces* piece = move.piece;
     pair<int, int> start = piece->GetPosition();
     pair<int, int> destination = move.destination;
@@ -415,12 +416,11 @@ void ChessBoard::performPromotion(char code) {
         case 'D':    //regina
             newPiece = new D(pos, color, moves);
             break;
-        case 'R':    //re
-            newPiece = new R(pos, color, moves);
-            break;
         case 'T':    //torre
             newPiece = new T(pos, color, moves);
             break;
+        default:
+            throw InvalidInputException();
     }
     board[pos.first][pos.second] = newPiece;
     *(find(piecesList.begin(), piecesList.end(), pieceToPromote)) = newPiece;
