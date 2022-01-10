@@ -1,5 +1,3 @@
-#include <iostream>
-#include <vector>
 #include "Pieces.h"
 #include "chessBoard.h"
 
