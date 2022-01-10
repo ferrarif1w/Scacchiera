@@ -20,7 +20,7 @@ class ChessBoard {
             Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
             Move();
         };
-        ChessBoard(string log);
+        ChessBoard(string log = "", string playerBlack = "", string playerWhite = "");
         /*ritorna vettore con tutte le mosse possibili*/
         vector<Move> movesAvailable(char color);
         /*metodo per computer: mossa tratta da vector<Move> ritornato da movesAvailable
@@ -31,7 +31,10 @@ class ChessBoard {
         bool performMove(pair<int, int> start, pair<int, int> destination, char color);
         void performPromotion(char newPiece);
         string printBoard();
+        /*metodo usato da bot*/
         int getCondition();
+        /*metodo usato da umano*/
+        int getCondition(char color);
         /*TOGLIERLA ALLA FINE DI TUTTO
         importa board da file*/
         void justForDebug(string fileName);
@@ -47,6 +50,8 @@ class ChessBoard {
         Pieces* pieceToPromote;
         /*0 se in scaccomatto, 1 se scacco, 2 se non più mosse regolari*/
         int condition = -1;
+        /*vettore contenente le mosse disponibili a un giocatore umano*/
+        vector<Move> humanPlayerMoves;
         const int SIZE = 8;
         bool legitMoveInput(pair<int, int>& x);
         bool scanBoundaries(pair<int, int>& pos);
@@ -59,7 +64,7 @@ class ChessBoard {
         void insertPiece(Pieces* piece, pair<int, int>* pos);
         void scanAddSpecialMoves(vector<Move>& moves, char color);
         bool scanPromotion(Pieces* piece);
-        /*row e column: eventuali posizioni modificate del re*/
+        /*row e column: eventuali coordinate modificate del re*/
         bool scanCheck(char color, int row = -1, int column = -1);
         //bool scanCheck(char color);
         bool scanCheck(Move& move, char color);
@@ -89,8 +94,8 @@ class ChessBoard {
             pair(1,2), pair(2,1), pair(2,-1), pair(1,-2), pair(-1,-2), pair(-2,-1), pair(-2,1), pair(-1,2)
         };
 };
-bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2);
 /*operatore di confronto per Move
 controlla se pezzo e posizione di arrivo sono uguali*/
+bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2);
 
 #endif
