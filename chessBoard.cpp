@@ -304,10 +304,10 @@ string ChessBoard::printBoard() {
     return out;
 }
 
-int ChessBoard::getCondition() {return condition;}
+//int ChessBoard::getCondition() {return condition;}
 
 int ChessBoard::getCondition(char color) {
-    humanPlayerMoves = movesAvailable(color);
+    nextPlayerMoves = movesAvailable(color);
     return condition;
 }
 
@@ -350,7 +350,13 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     return moves;
 }
 
-bool ChessBoard::performMove(Move move) {
+bool ChessBoard::performMove(Move m) {
+    Move move;
+    if (move.moveName == -1) {
+        int i = rand() % nextPlayerMoves.size();
+        move = nextPlayerMoves[i];
+    }
+    else move = m;
     pieceToPromote = nullptr;
     Pieces* piece = move.piece;
     pair<int, int> start = piece->GetPosition();
@@ -396,8 +402,8 @@ bool ChessBoard::performMove(pair<int, int>& start, pair<int, int>& destination,
     if (!(legitMoveInput(start) && legitMoveInput(destination))) throw InvalidInputException();
     Pieces* piece = board[start.first][start.second];
     Move tmpMove = Move(piece, destination, 0, nullptr);
-    auto result = find(humanPlayerMoves.begin(), humanPlayerMoves.end(), tmpMove);
-    if (result == humanPlayerMoves.end()) throw InvalidMoveException();
+    auto result = find(nextPlayerMoves.begin(), nextPlayerMoves.end(), tmpMove);
+    if (result == nextPlayerMoves.end()) throw InvalidMoveException();
     return performMove(*result);
 }
 

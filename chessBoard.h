@@ -31,14 +31,14 @@ class ChessBoard {
         vector<Move> movesAvailable(char color);
         /*metodo per computer: mossa tratta da vector<Move> ritornato da movesAvailable
         ritorna true se è possibile promozione, false altrimenti*/
-        bool performMove(Move move);
+        bool performMove(Move m = Move(nullptr, pair(0,0), -1, nullptr));
         /*metodo per giocatore: fornire posizioni
         ritorna true se è possibile promozione, false altrimenti*/
         bool performMove(pair<int, int>& start, pair<int, int>& destination, char color);
         void performPromotion(char newPiece);
         string printBoard();
         /*metodo usato da bot*/
-        int getCondition();
+        //int getCondition();
         /*metodo usato da umano*/
         int getCondition(char color);
         pair<int, int> getPawnToPromote();
@@ -58,7 +58,7 @@ class ChessBoard {
         /*0 se in scaccomatto, 1 se scacco, 2 se non più mosse regolari, 3 altrimenti*/
         int condition = -1;
         /*vettore contenente le mosse disponibili a un giocatore umano*/
-        vector<Move> humanPlayerMoves;
+        vector<Move> nextPlayerMoves;
         const int SIZE = 8;
         bool legitMoveInput(pair<int, int>& x);
         bool scanBoundaries(pair<int, int>& pos);

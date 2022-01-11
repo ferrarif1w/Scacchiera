@@ -1,10 +1,11 @@
 #include "Gamers.h"
 
-Gamers::Gamers(char C, ChessBoard *B, string N)
+Gamers::Gamers(char C, ChessBoard *B, string N, char T)
 {
     Name = N;
     Color = C;
     chessBoard = B;
+    Type = T;
 }
 
 //player
@@ -22,8 +23,7 @@ return chessBoard->performMove(s, f, Color);
 
 int Gamers::GetCondition()
 {
-
-return chessBoard->getCondition();
+    return chessBoard->getCondition(Color);
 
 }
 
@@ -35,12 +35,7 @@ void Gamers::PerformPromotion(char code)
 //Bot
 bool Gamers::Move()
 {
-
-    vector<ChessBoard::Move> v1 = chessBoard->movesAvailable(Color);
-
-    int m = rand() % v1.size();
-
-    return chessBoard->performMove(v1[m]);
+    return chessBoard->performMove();
 }
 
 char Gamers::PerformPromotion()

@@ -15,6 +15,8 @@ void printTextEffect(string s, int delayShort = 1, int delayLong = 250) {
 }
 
 int main() {
+    const char B = 66;
+    const char U = 85;
     printTextEffect("Benvenuto nel gioco degli scacchi!");
     printTextEffect("Che partita vuoi fare? Inserire:");
     insertGame:
@@ -35,8 +37,8 @@ int main() {
         printTextEffect("Giocherai con le pedine bianche!");
         names[1] = botNames[rand() % 10];
         printTextEffect("Il bot si chiama " + names[1] + " e giocherà con le pedine nere.");
-        types.push_back('U');
-        types.push_back('B');
+        types.push_back(U);
+        types.push_back(B);
     }
     else if (game == "pc" && whiteCode == 1) {
         printTextEffect("Inserisci il nome del giocatore umano: ");
@@ -44,24 +46,24 @@ int main() {
         printTextEffect("Giocherai con le pedine nere!");
         names[0] = botNames[rand() % 10];
         printTextEffect("Il bot si chiama " + names[0] + " e giocherà con le pedine bianche.");
-        types.push_back('B');
-        types.push_back('U');
+        types.push_back(B);
+        types.push_back(U);
     }
     else if (game == "cc") {
         names[0] = names[rand() % 10];
         names[1] = names[rand() % 10];
         printTextEffect("Il bot che giocherà con le pedine bianche si chiama " + names[0] + ".");
         printTextEffect("Il bot che giocherà con le pedine nere si chiama " + names[1] + ".");
-        types.push_back('B');
-        types.push_back('B');
+        types.push_back(B);
+        types.push_back(B);
     }
     else {
         printTextEffect("Input non valido, riprovare; si può inserire solo:");
         goto insertGame;
     }
     ChessBoard board = ChessBoard("log.txt", names[0], names[1]);
-    players.push_back(Gamers('B', &board, names[0]));
-    players.push_back(Gamers('N', &board, names[1]));
+    players.push_back(Gamers('B', &board, names[0], types[0]));
+    players.push_back(Gamers('N', &board, names[1], types[1]));
     int i = 0;
     int movesThreshold;
     if (game == "cc") movesThreshold = 50;

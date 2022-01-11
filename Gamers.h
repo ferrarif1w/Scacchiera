@@ -11,11 +11,12 @@ class Gamers
         string Name;
         char Color;
         ChessBoard *chessBoard;
+        char Type;
 
     public:
 
 //costruttore
-        Gamers(char C, ChessBoard *chessBoard, string N);
+        Gamers(char C, ChessBoard *chessBoard, string N, char T);
 
 //player
         bool Move(string start, string end);
