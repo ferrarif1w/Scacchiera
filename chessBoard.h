@@ -26,7 +26,7 @@ class ChessBoard {
             Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
             Move();
         };
-        ChessBoard(string log = "", string playerBlack = "", string playerWhite = "");
+        ChessBoard(string log = "", string playerWhite = "", string playerBlack = "");
         /*ritorna vettore con tutte le mosse possibili*/
         vector<Move> movesAvailable(char color);
         /*metodo per computer: mossa tratta da vector<Move> ritornato da movesAvailable
@@ -34,13 +34,14 @@ class ChessBoard {
         bool performMove(Move move);
         /*metodo per giocatore: fornire posizioni
         ritorna true se è possibile promozione, false altrimenti*/
-        bool performMove(pair<int, int> start, pair<int, int> destination, char color);
+        bool performMove(pair<int, int>& start, pair<int, int>& destination, char color);
         void performPromotion(char newPiece);
         string printBoard();
         /*metodo usato da bot*/
         int getCondition();
         /*metodo usato da umano*/
         int getCondition(char color);
+        pair<int, int> getPawnToPromote();
         /*TOGLIERLA ALLA FINE DI TUTTO
         importa board da file*/
         void justForDebug(string fileName);

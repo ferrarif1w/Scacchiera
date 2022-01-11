@@ -21,7 +21,7 @@ class Gamers
         bool Move(string start, string end);
         int GetCondition();
         void PerformPromotion(char code);
-        void PerformPromotion();
+        char PerformPromotion();
 
         //bot
         bool Move();
@@ -29,4 +29,3 @@ class Gamers
 
 #endif
 
-//     string P[10]{"Magnus", "Morphy", "Polgar", "Kasparov", "Gallo", "Shaldon", "Marius", "Bobbi", "Turing", "Pippo"};

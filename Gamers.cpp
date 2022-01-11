@@ -14,8 +14,10 @@ bool Gamers::Move(string start, string end)
     int sSecond = start[0]-65;
     int fFirst = end[1]-49;
     int fSecond = end[0]-65;
+    pair<int, int> s = pair(sFirst, sSecond);
+    pair<int, int> f = pair(fFirst, fSecond);
 
-return chessBoard->performMove(pair(sFirst, sSecond), pair(fFirst, fSecond), Color);
+return chessBoard->performMove(s, f, Color);
 }
 
 int Gamers::GetCondition()
@@ -41,12 +43,14 @@ bool Gamers::Move()
     return chessBoard->performMove(v1[m]);
 }
 
-void Gamers::PerformPromotion()
+char Gamers::PerformPromotion()
 {
 
     char P[4]{'A', 'T', 'C', 'R'};
 
     int r = rand() % 4;
 
-    return chessBoard->performPromotion(P[r]);
+    chessBoard->performPromotion(P[r]);
+
+    return P[r];
 }

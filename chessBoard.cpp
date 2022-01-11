@@ -268,7 +268,7 @@ void ChessBoard::updateLog(char newPiece) {
     write.close();
 }
 
-ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
+ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
     for (int i = 0; i < 8; i++) board.push_back(vector<Pieces*>(8, nullptr));
     //inizializzare file
     initializeRow(0);
@@ -278,7 +278,7 @@ ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
     lastMove = Move();
     pieceToPromote = nullptr;
     logFile = log;
-    if (log != "" && playerBlack != "" && playerWhite != "") {
+    if (log != "" && playerWhite != "" && playerBlack != "") {
         ofstream write(logFile);
         string playerRow = "B: " + playerWhite + " N: " + playerBlack + "\n";
         write << playerRow;
@@ -300,7 +300,7 @@ string ChessBoard::printBoard() {
         out += "\n";
         out += "  ---------------------------------\n";
     }
-    out += "    A   B   C   D   E   F   G   H";
+    out += "    A   B   C   D   E   F   G   H\n\n";
     return out;
 }
 
@@ -392,8 +392,8 @@ bool ChessBoard::performMove(Move move) {
     return false;
 }
 
-bool ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
-    if (!(legitMoveInput(start) && legitMoveInput(start))) throw InvalidInputException();
+bool ChessBoard::performMove(pair<int, int>& start, pair<int, int>& destination, char color) {
+    if (!(legitMoveInput(start) && legitMoveInput(destination))) throw InvalidInputException();
     Pieces* piece = board[start.first][start.second];
     Move tmpMove = Move(piece, destination, 0, nullptr);
     auto result = find(humanPlayerMoves.begin(), humanPlayerMoves.end(), tmpMove);
@@ -426,6 +426,10 @@ void ChessBoard::performPromotion(char code) {
     *(find(piecesList.begin(), piecesList.end(), pieceToPromote)) = newPiece;
     delete pieceToPromote;
     if (logFile != "") updateLog(code);
+}
+
+pair<int, int> ChessBoard::getPawnToPromote() {
+    return pieceToPromote->GetPosition();
 }
 
 void ChessBoard::justForDebug(string fileName) {
