@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 #include <utility>
-#include <valarray>
 #include <vector>
 #include <map>
 #include "Pieces.h"

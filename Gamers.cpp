@@ -1,12 +1,10 @@
 #include "Gamers.h"
 
-Gamers::Gamers(char n, char c, ChessBoard *B, char T)
+Gamers::Gamers(char c, ChessBoard *B)
 {
 
-    Name = n;
     Color = c;
     chessBoard = B;
-    Type = T;
 }
 
 //player
