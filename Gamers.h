@@ -11,20 +11,21 @@ class Gamers
         char Name;
         char Color;
         ChessBoard *chessBoard;
-        char P[4]{'A', 'T', 'C', 'R'};
+        char Type;
 
     public:
 
 //costruttore
-        Gamers(char Name, char Color, ChessBoard *chessBoard);
+        Gamers(char Name, char Color, ChessBoard *chessBoard, char Type);
 
 //player
-        int PlayerMove(string start, string end);
+        bool Move(string start, string end);
         int GetCondition();
         void PerformPromotion(char code);
+        void PerformPromotion();
 
-//bot
-        string BotMove();
+        //bot
+        bool Move();
 };
 
 #endif

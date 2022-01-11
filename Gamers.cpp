@@ -1,22 +1,23 @@
 #include "Gamers.h"
 
-Gamers::Gamers(char n, char c, ChessBoard *B)
+Gamers::Gamers(char n, char c, ChessBoard *B, char T)
 {
 
-    char Name = n;
-    char Color = c;
-    ChessBoard *chessBoard = B;
+    Name = n;
+    Color = c;
+    chessBoard = B;
+    Type = T;
 }
 
 //player
-int Gamers::PlayerMove(string start, string end)
+bool Gamers::Move(string start, string end)
 {
     int sFirst = start[1]-49;
-            int sSecond = start[0]-65;
-            int fFirst = end[1]-49;
-            int fSecond = end[0]-65;
+    int sSecond = start[0]-65;
+    int fFirst = end[1]-49;
+    int fSecond = end[0]-65;
 
-return chessBoard.performMove(pair(sFirst, sSecond), pair(fFirst, fSecond), color);
+return chessBoard->performMove(pair(sFirst, sSecond), pair(fFirst, fSecond), Color);
 }
 
 int Gamers::GetCondition()
@@ -32,28 +33,22 @@ void Gamers::PerformPromotion(char code)
 }
 
 //Bot
-string Gamers::BotMove()
+bool Gamers::Move()
 {
 
     vector<ChessBoard::Move> v1 = chessBoard->movesAvailable(Color);
 
-    int Cond = chessBoard->getCondition();
-
-    if (Cond == 0 || Cond == 2)
-    {
-        return to_string("N" + Cond);
-    }
-
     int m = rand() % v1.size();
 
-    if (chessBoard->performMove(v1[m]))
-    {
-        m = rand() % 4;
+    return chessBoard->performMove(v1[m]);
+}
 
-        chessBoard->performPromotion(P[m]);
+void Gamers::PerformPromotion()
+{
 
-        return to_string(P[m] + Cond;)
-    }
+    char P[4]{'A', 'T', 'C', 'R'};
 
-    return to_string("N" + Cond);
+    int r = rand() % 4;
+
+    return chessBoard->performPromotion(P[r]);
 }

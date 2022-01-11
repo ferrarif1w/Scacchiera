@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "chessBoard.h"
 
 class replayBoard {

@@ -1,9 +1,14 @@
 #ifndef CHESSBOARD_H
 #define CHESSBOARD_H
 
-#include <bits/stdc++.h>
-#include "Pieces.h"
+#include <algorithm>
+#include <fstream>
+#include <string>
+#include <utility>
+#include <valarray>
 #include <vector>
+#include <map>
+#include "Pieces.h"
 
 using namespace std;
 
