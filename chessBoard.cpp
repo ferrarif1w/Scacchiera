@@ -350,13 +350,7 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     return moves;
 }
 
-bool ChessBoard::performMove(Move m) {
-    Move move;
-    if (move.moveName == -1) {
-        int i = rand() % nextPlayerMoves.size();
-        move = nextPlayerMoves[i];
-    }
-    else move = m;
+bool ChessBoard::performMove(Move move) {
     pieceToPromote = nullptr;
     Pieces* piece = move.piece;
     pair<int, int> start = piece->GetPosition();
@@ -405,6 +399,12 @@ bool ChessBoard::performMove(pair<int, int>& start, pair<int, int>& destination,
     auto result = find(nextPlayerMoves.begin(), nextPlayerMoves.end(), tmpMove);
     if (result == nextPlayerMoves.end()) throw InvalidMoveException();
     return performMove(*result);
+}
+
+bool ChessBoard::performMove() {
+    int i = rand() % nextPlayerMoves.size();
+    Move m = nextPlayerMoves[i];
+    return performMove(m);
 }
 
 void ChessBoard::performPromotion(char code) {

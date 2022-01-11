@@ -29,9 +29,12 @@ class ChessBoard {
         ChessBoard(string log = "", string playerWhite = "", string playerBlack = "");
         /*ritorna vettore con tutte le mosse possibili*/
         vector<Move> movesAvailable(char color);
-        /*metodo per computer: mossa tratta da vector<Move> ritornato da movesAvailable
+        /*metodo generale
         ritorna true se è possibile promozione, false altrimenti*/
-        bool performMove(Move m = Move(nullptr, pair(0,0), -1, nullptr));
+        bool performMove(Move move);
+        /*metodo per computer: mossa presa automaticamente da nextPlayerMoves
+        ritorna true se è possibile promozione, false altrimenti*/
+        bool performMove();
         /*metodo per giocatore: fornire posizioni
         ritorna true se è possibile promozione, false altrimenti*/
         bool performMove(pair<int, int>& start, pair<int, int>& destination, char color);
