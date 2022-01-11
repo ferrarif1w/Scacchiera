@@ -1,8 +1,8 @@
 #include "Gamers.h"
 
-Gamers::Gamers(char c, ChessBoard *B)
+Gamers::Gamers(string n, char c, ChessBoard *B)
 {
-
+    Name = n;
     Color = c;
     chessBoard = B;
 }

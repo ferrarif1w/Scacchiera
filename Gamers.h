@@ -8,13 +8,14 @@ class Gamers
 
     protected:
 
+        string Name;
         char Color;
         ChessBoard *chessBoard;
 
     public:
 
 //costruttore
-        Gamers(char Name, char Color, ChessBoard *chessBoard);
+        Gamers(char Color, ChessBoard *chessBoard);
 
 //player
         bool Move(string start, string end);
