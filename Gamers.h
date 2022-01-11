@@ -15,7 +15,7 @@ class Gamers
     public:
 
 //costruttore
-        Gamers(char Color, ChessBoard *chessBoard);
+        Gamers(char C, ChessBoard *chessBoard, string N);
 
 //player
         bool Move(string start, string end);
@@ -28,3 +28,5 @@ class Gamers
 };
 
 #endif
+
+//     string P[10]{"Magnus", "Morphy", "Polgar", "Kasparov", "Gallo", "Shaldon", "Marius", "Bobbi", "Turing", "Pippo"};

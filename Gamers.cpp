@@ -1,9 +1,9 @@
 #include "Gamers.h"
 
-Gamers::Gamers(string n, char c, ChessBoard *B)
+Gamers::Gamers(char C, ChessBoard *B, string N)
 {
-    Name = n;
-    Color = c;
+    Name = N;
+    Color = C;
     chessBoard = B;
 }
 
