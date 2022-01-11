@@ -153,7 +153,7 @@ bool ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
     if (scanCheck(color)) return false;
     for (int i = 1; i < abs(start-finish); i++) {
         Move tmp = Move(king, pair(row, start + i*factor), 0);
-        if (scanOccupied(row, start + i*factor) != 0 || scanCheck(tmp, color))
+        if (scanOccupied(row, start + i*factor) != 0 || (i <= 2 && scanCheck(tmp, color)))
             return false;
     }
     return true;
