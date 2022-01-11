@@ -3,6 +3,8 @@
 
 #include <bits/stdc++.h>
 #include "Pieces.h"
+#include <vector>
+
 using namespace std;
 
 class ChessBoard {
