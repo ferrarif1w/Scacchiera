@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <random>
 #include "Pieces.h"
 
 using namespace std;

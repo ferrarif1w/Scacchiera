@@ -333,7 +333,6 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     int start = 0;
     if (color == 'N') start = SIZE*2;
     bool initialCheck = scanCheck(color);
-    if (initialCheck) condition = 1;
     for (int i = 0; i < SIZE*2; i++) {
         Pieces* piece = piecesList[start+i];
         if (!piece) continue;
@@ -362,6 +361,7 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     }
     scanAddSpecialMoves(moves, color);
     if (scanCheckmate(initialCheck, moves)) condition = 0;
+    else if (initialCheck) condition = 1;
     else if (moves.size() == 0) condition = 2;
     else condition = -1;
     return moves;

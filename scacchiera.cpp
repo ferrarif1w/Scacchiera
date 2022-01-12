@@ -17,6 +17,7 @@ void printTextEffect(string s, int delayShort = 1, int delayLong = 250) {
 int main() {
     const char B = 66;
     const char U = 85;
+    srand(time(NULL));
     printTextEffect("Benvenuto nel gioco degli scacchi!");
     printTextEffect("Che partita vuoi fare? Inserire:");
     insertGame:
@@ -50,8 +51,8 @@ int main() {
         types.push_back(U);
     }
     else if (game == "cc") {
-        names[0] = names[rand() % 10];
-        names[1] = names[rand() % 10];
+        names[0] = botNames[rand() % 10];
+        names[1] = botNames[rand() % 10];
         printTextEffect("Il bot che giocherà con le pedine bianche si chiama " + names[0] + ".");
         printTextEffect("Il bot che giocherà con le pedine nere si chiama " + names[1] + ".");
         types.push_back(B);
@@ -64,6 +65,14 @@ int main() {
     ChessBoard board = ChessBoard("log.txt", names[0], names[1]);
     players.push_back(Gamers('B', &board, names[0], types[0]));
     players.push_back(Gamers('N', &board, names[1], types[1]));
+    printTextEffect("Vuoi partire con una scacchiera personalizzata? ");
+    char te;
+    cin >> te;
+    if (te == 'y') {
+        board.justForDebug("board.txt");
+        printTextEffect("Ecco la nuova scacchiera!");
+        cout << board.printBoard();
+    }
     int i = 0;
     int movesThreshold;
     if (game == "cc") movesThreshold = 50;
@@ -79,28 +88,29 @@ int main() {
         switch (cond) {
             case 0:
                 message = names[index] + " è in scaccomatto, ";
-                if (index = 0) message += names[1];
+                if (index == 0) message += names[1];
                 else message += names[0];
                 message += " vince!";
                 printTextEffect(message);
-                endgame = false;
+                endgame = true;
                 continue;
             case 1:
-                message += "È sotto scacco!";
+                message += " È sotto scacco!";
+                break;
             case 2:
                 printTextEffect("È stato raggiunto uno stallo! Ecco la scacchiera finale:");
                 cout << board.printBoard();
-                endgame = false;
+                endgame = true;
                 continue;
             case 3:
                 printTextEffect("La partita termina in patta! Non ci sono abbastanza pezzi per eseguire uno scaccomatto! Ecco la scacchiera finale:");
                 cout << board.printBoard();
-                endgame = false;
+                endgame = true;
                 continue;
             case 4:
                 printTextEffect("La partita termina in patta! Sono state eseguite 50 mosse senza spostare pedoni o mangiare pezzi! Ecco la scacchiera finale:");
                 cout << board.printBoard();
-                endgame = false;
+                endgame = true;
                 continue;
         }
         printTextEffect(message);
