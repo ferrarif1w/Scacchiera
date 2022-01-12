@@ -69,22 +69,39 @@ int main() {
     if (game == "cc") movesThreshold = 50;
     else movesThreshold = -1;
     int index;
-    while (i != movesThreshold) {
+    bool endgame = false;
+    while (i != movesThreshold && !endgame) {
         int index = i%2;
         string message = "Turno di " + names[index] + " con le pedine ";
         if (index == 0) message += "bianche!";
         else message += "nere!";
         int cond = players[index].GetCondition();
-        if (cond == 0) {
-            message = names[index] + " è in scaccomatto, ";
-            if (index = 0) message += names[1];
-            else message += names[0];
-            message += " vince!";
-            printTextEffect(message);
-            break;
-        }
-        else if (cond == 1) {
-            message += "È sotto scacco!";
+        switch (cond) {
+            case 0:
+                message = names[index] + " è in scaccomatto, ";
+                if (index = 0) message += names[1];
+                else message += names[0];
+                message += " vince!";
+                printTextEffect(message);
+                endgame = false;
+                continue;
+            case 1:
+                message += "È sotto scacco!";
+            case 2:
+                printTextEffect("È stato raggiunto uno stallo! Ecco la scacchiera finale:");
+                cout << board.printBoard();
+                endgame = false;
+                continue;
+            case 3:
+                printTextEffect("La partita termina in patta! Non ci sono abbastanza pezzi per eseguire uno scaccomatto! Ecco la scacchiera finale:");
+                cout << board.printBoard();
+                endgame = false;
+                continue;
+            case 4:
+                printTextEffect("La partita termina in patta! Sono state eseguite 50 mosse senza spostare pedoni o mangiare pezzi! Ecco la scacchiera finale:");
+                cout << board.printBoard();
+                endgame = false;
+                continue;
         }
         printTextEffect(message);
         Gamers p = players[index];
@@ -153,7 +170,7 @@ int main() {
         }
         i++;
     }
-
-   
-            
+    if (game == "cc" && i == movesThreshold) 
+        printTextEffect("La partita termina in patta! È stata effettuata la 50esima mossa totale!");
+    printTextEffect("Grazie per aver giocato!"); 
 }

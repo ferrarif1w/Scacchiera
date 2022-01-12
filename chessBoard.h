@@ -40,9 +40,6 @@ class ChessBoard {
         bool performMove(pair<int, int>& start, pair<int, int>& destination, char color);
         void performPromotion(char newPiece);
         string printBoard();
-        /*metodo usato da bot*/
-        //int getCondition();
-        /*metodo usato da umano*/
         int getCondition(char color);
         pair<int, int> getPawnToPromote();
         /*TOGLIERLA ALLA FINE DI TUTTO
@@ -55,13 +52,17 @@ class ChessBoard {
         vector<vector<Pieces*>> board;
         /*prima pezzi bianchi (pedoni per ultimi), poi pezzi neri (pedoni per ultimi)*/
         vector<Pieces*> piecesList;
+        int piecesLeftWithoutKings;
         Move lastMove;
         string logFile;
         Pieces* pieceToPromote;
-        /*0 se in scaccomatto, 1 se scacco, 2 se non più mosse regolari, 3 altrimenti*/
+        /*0 se in scaccomatto, 1 se scacco, 2 se stallo, 3 se patta per mancanza di pezzi,
+        4 se patta per numero di mosse, -1 altrimenti*/
         int condition = -1;
         /*vettore contenente le mosse disponibili a un giocatore umano*/
         vector<Move> nextPlayerMoves;
+        //numero di mosse effettuate senza muovere pedoni e catturare pezzi (per patta per numero di mosse)
+        int drawMoves;
         const int SIZE = 8;
         bool legitMoveInput(pair<int, int>& x);
         bool scanBoundaries(pair<int, int>& pos);
@@ -76,10 +77,10 @@ class ChessBoard {
         bool scanPromotion(Pieces* piece);
         /*row e column: eventuali coordinate modificate del re*/
         bool scanCheck(char color, int row = -1, int column = -1);
-        //bool scanCheck(char color);
         bool scanCheck(Move& move, char color);
         //bool scanCheckMate(vector<Move>& moves, char color);
-        bool scanCheckMate(bool initialCheck, vector<Move>& moves);
+        bool scanCheckmate(bool initialCheck, vector<Move>& moves);
+        bool scanCheckmateImpossibility();
         /*p1 = pedone che cattura, p2 = pedone che viene catturato*/
         bool enPassantConditions(Pieces* p1, Pieces* p2);
         /*true se possibile arrocco, tipo di arrocco determinato da chiamante*/
