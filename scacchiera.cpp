@@ -5,7 +5,8 @@
 #include <thread>
 using namespace std;
 
-void printTextEffect(string s, int delayShort = 1, int delayLong = 250) {
+//acronimo di printTextEffect
+void PTE(string s, int delayShort = 1, int delayLong = 250) {
     for (int i = 0; i < s.size(); i++) {
         this_thread::sleep_for(chrono::milliseconds(delayShort));
         cout << s[i];
@@ -18,11 +19,11 @@ int main() {
     const char B = 66;
     const char U = 85;
     srand(time(NULL));
-    printTextEffect("Benvenuto nel gioco degli scacchi!");
-    printTextEffect("Che partita vuoi fare? Inserire:");
+    PTE("Benvenuto nel gioco degli scacchi!");
+    PTE("Che partita vuoi fare? Inserire:");
     insertGame:
-    printTextEffect("- pc: partita player vs. computer");
-    printTextEffect("- cc: partita computer vs. computer");
+    PTE("- pc: partita player vs. computer");
+    PTE("- cc: partita computer vs. computer");
     string game;
     cin >> game;
     vector<string> names(2);
@@ -33,44 +34,44 @@ int main() {
     //se white == 1, secondo giocatore inserito (computer) ha il bianco
     int whiteCode = rand() % 2;
     if (game == "pc" && whiteCode == 0) {
-        printTextEffect("Inserisci il nome del giocatore umano: ");
+        PTE("Inserisci il nome del giocatore umano: ");
         cin >> names[0];
-        printTextEffect("Giocherai con le pedine bianche!");
+        PTE("Giocherai con le pedine bianche!");
         names[1] = botNames[rand() % 10];
-        printTextEffect("Il bot si chiama " + names[1] + " e giocherà con le pedine nere.");
+        PTE("Il bot si chiama " + names[1] + " e giocherà con le pedine nere.");
         types.push_back(U);
         types.push_back(B);
     }
     else if (game == "pc" && whiteCode == 1) {
-        printTextEffect("Inserisci il nome del giocatore umano: ");
+        PTE("Inserisci il nome del giocatore umano: ");
         cin >> names[1];
-        printTextEffect("Giocherai con le pedine nere!");
+        PTE("Giocherai con le pedine nere!");
         names[0] = botNames[rand() % 10];
-        printTextEffect("Il bot si chiama " + names[0] + " e giocherà con le pedine bianche.");
+        PTE("Il bot si chiama " + names[0] + " e giocherà con le pedine bianche.");
         types.push_back(B);
         types.push_back(U);
     }
     else if (game == "cc") {
         names[0] = botNames[rand() % 10];
         names[1] = botNames[rand() % 10];
-        printTextEffect("Il bot che giocherà con le pedine bianche si chiama " + names[0] + ".");
-        printTextEffect("Il bot che giocherà con le pedine nere si chiama " + names[1] + ".");
+        PTE("Il bot che giocherà con le pedine bianche si chiama " + names[0] + ".");
+        PTE("Il bot che giocherà con le pedine nere si chiama " + names[1] + ".");
         types.push_back(B);
         types.push_back(B);
     }
     else {
-        printTextEffect("Input non valido, riprovare; si può inserire solo:");
+        PTE("Input non valido, riprovare; si può inserire solo:");
         goto insertGame;
     }
     ChessBoard board = ChessBoard("log.txt", names[0], names[1]);
     players.push_back(Gamers('B', &board, names[0], types[0]));
     players.push_back(Gamers('N', &board, names[1], types[1]));
-    printTextEffect("Vuoi partire con una scacchiera personalizzata? ");
+    PTE("Vuoi partire con una scacchiera personalizzata? ");
     char te;
     cin >> te;
     if (te == 'y') {
         board.justForDebug("board.txt");
-        printTextEffect("Ecco la nuova scacchiera!");
+        PTE("Ecco la nuova scacchiera!");
         cout << board.printBoard();
     }
     int i = 0;
@@ -84,6 +85,7 @@ int main() {
         string message = "Turno di " + names[index] + " con le pedine ";
         if (index == 0) message += "bianche!";
         else message += "nere!";
+        condition:
         int cond = players[index].GetCondition();
         switch (cond) {
             case 0:
@@ -91,57 +93,62 @@ int main() {
                 if (index == 0) message += names[1];
                 else message += names[0];
                 message += " vince!";
-                printTextEffect(message);
+                PTE(message);
                 endgame = true;
                 continue;
             case 1:
                 message += " È sotto scacco!";
-                printTextEffect(message);
+                PTE(message);
                 break;
             case 2:
-                printTextEffect("È stato raggiunto uno stallo! Ecco la scacchiera finale:");
+                PTE("È stato raggiunto uno stallo! Ecco la scacchiera finale:");
                 cout << board.printBoard();
                 endgame = true;
                 continue;
             case 3:
-                printTextEffect("La partita termina in patta! Non ci sono abbastanza pezzi per eseguire uno scaccomatto! Ecco la scacchiera finale:");
+                PTE("La partita termina in patta! Non ci sono abbastanza pezzi per eseguire uno scaccomatto! Ecco la scacchiera finale:");
                 cout << board.printBoard();
                 endgame = true;
                 continue;
             case 4:
-                printTextEffect("La partita termina in patta! Sono state eseguite 50 mosse senza spostare pedoni o mangiare pezzi! Ecco la scacchiera finale:");
+                PTE("La partita termina in patta! Sono state eseguite 50 mosse senza spostare pedoni o mangiare pezzi! Ecco la scacchiera finale:");
                 cout << board.printBoard();
                 endgame = true;
                 continue;
             case 5:
                 if (game == "pc") {
-                    printTextEffect("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
+                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
                     char draw;
                     cin >> draw;
                     if (draw == 'y') {
-                        printTextEffect("La partita termina in patta!");
-                        endgame = true;
-                        continue;
-                    }
-                }
-                else {
-                    printTextEffect("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta?");
-                    int decision = rand()%1000;
-                    if (decision == 1) {
-                        printTextEffect("I bot si accordano per la patta! La partita termina!");
+                        PTE("La partita termina in patta!");
                         endgame = true;
                         continue;
                     }
                     else {
-                        printTextEffect("I bot decidono di continuare a giocare!");
+                        PTE("Si continua a giocare!");
+                        goto condition;
+                    }
+                }
+                else {
+                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta?");
+                    int decision = rand()%1000;
+                    if (decision == 1) {
+                        PTE("I bot si accordano per la patta! La partita termina!");
+                        endgame = true;
+                        continue;
+                    }
+                    else {
+                        PTE("I bot decidono di continuare a giocare!");
+                        goto condition;
                     }
                 }
                 break;
         }
-        printTextEffect(message);
+        PTE(message);
         Gamers p = players[index];
         if (types[index] == 'U') {
-            printTextEffect("Se vuoi stampare la scacchiera, inserire 'y': ");
+            PTE("Se vuoi stampare la scacchiera, inserire 'y': ");
             char code;
             cin >> code;
             if (code == 'y') cout << board.printBoard();
@@ -149,15 +156,15 @@ int main() {
             string end;
             bool result;
             insertMove:
-            printTextEffect("Inserisci le coordinate del pezzo che vuoi spostare e della casella nella quale vuoi spostare il pezzo: ");
+            PTE("Inserisci le coordinate del pezzo che vuoi spostare e della casella nella quale vuoi spostare il pezzo: ");
             cin >> start >> end;
             try {result = p.Move(start, end);}
             catch (ChessBoard::InvalidMoveException e) {
-                printTextEffect("La mossa inserita non è valida.");
+                PTE("La mossa inserita non è valida.");
                 goto insertMove;
             }
             catch (ChessBoard::InvalidInputException e) {
-                printTextEffect("L'input inserito non è valido");
+                PTE("L'input inserito non è valido");
                 goto insertMove;
             }
             if (result) {
@@ -167,7 +174,7 @@ int main() {
                 message += pos.first + 49;
                 promotion:
                 message += ":\n- A: alfiere;\n- C: cavallo;\n- D: regina;\n- T: torre.";
-                printTextEffect(message);
+                PTE(message);
                 char code;
                 cin >> code;
                 try {board.performPromotion(code);}
@@ -179,7 +186,7 @@ int main() {
         }
         else {
             bool result = p.Move();
-            printTextEffect("Mossa effettuata!");
+            PTE("Mossa effettuata!");
             if (result) {
                 pair<int, int> pos = board.getPawnToPromote();
                 char newPiece = players[index].PerformPromotion();
@@ -206,6 +213,6 @@ int main() {
         i++;
     }
     if (game == "cc" && i == movesThreshold) 
-        printTextEffect("La partita termina in patta! È stata effettuata la 50esima mossa totale!");
-    printTextEffect("Grazie per aver giocato!"); 
+        PTE("La partita termina in patta! È stata effettuata la 50esima mossa totale!");
+    PTE("Grazie per aver giocato!"); 
 }

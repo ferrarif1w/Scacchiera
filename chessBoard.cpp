@@ -322,13 +322,6 @@ string ChessBoard::printBoard() {
 //int ChessBoard::getCondition() {return condition;}
 
 int ChessBoard::getCondition(char color) {
-    try {
-        if (positions.at(printBoard()) == 3) {
-            condition = 5;
-            positions.erase(printBoard());
-        }
-    }
-    catch (out_of_range& e) {}
     if (drawMoves >= 50) condition = 4;
     else if (scanCheckmateImpossibility()) condition = 3;
     else nextPlayerMoves = movesAvailable(color);
@@ -367,10 +360,17 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
         }
     }
     scanAddSpecialMoves(moves, color);
-    if (scanCheckmate(initialCheck, moves)) condition = 0;
-    else if (initialCheck) condition = 1;
-    else if (moves.size() == 0) condition = 2;
-    else condition = -1;
+    try {
+        if (positions.at(printBoard()) == 3) {
+            condition = 5;
+            positions.erase(printBoard());
+        }
+        else if (scanCheckmate(initialCheck, moves)) condition = 0;
+        else if (initialCheck) condition = 1;
+        else if (moves.size() == 0) condition = 2;
+        else condition = -1;
+    }
+    catch (out_of_range& e) {}
     return moves;
 }
 
