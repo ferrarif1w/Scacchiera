@@ -13,8 +13,10 @@ bool Gamers::Move(string start, string end)
 {
     int sFirst = start[1]-49;
     int sSecond = start[0]-65;
+    if (sSecond > 7) sSecond -= 32;
     int fFirst = end[1]-49;
     int fSecond = end[0]-65;
+    if (fSecond > 7) fSecond -= 32;
     pair<int, int> s = pair(sFirst, sSecond);
     pair<int, int> f = pair(fFirst, fSecond);
 

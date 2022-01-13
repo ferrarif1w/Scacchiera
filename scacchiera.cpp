@@ -46,6 +46,7 @@ int main() {
         PTE("Inserisci il nome del giocatore umano: ");
         cin >> names[1];
         PTE("Giocherai con le pedine nere!");
+        PTE("Se vuoi chiedere la patta, inserisci 'patta' quando ti chiede se vuoi stampare la scacchiera!");
         names[0] = botNames[rand() % 10];
         PTE("Il bot si chiama " + names[0] + " e giocherà con le pedine bianche.");
         types.push_back(B);
@@ -85,8 +86,39 @@ int main() {
         string message = "Turno di " + names[index] + " con le pedine ";
         if (index == 0) message += "bianche!";
         else message += "nere!";
-        condition:
         int cond = players[index].GetCondition();
+        if (cond >= 9) {
+            cond -= 10;
+            if (cond != 0) {
+                if (game == "pc") {
+                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
+                    char draw;
+                    cin >> draw;
+                    if (draw == 'y') {
+                        PTE("La partita termina in patta!");
+                        endgame = true;
+                        continue;
+                    }
+                    else {
+                        PTE("Si continua a giocare!");
+                        cond -= 10;
+                    }
+                }
+                else {
+                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta?");
+                    int decision = rand()%1000;
+                    if (decision == 1) {
+                        PTE("I bot si accordano per la patta! La partita termina!");
+                        endgame = true;
+                        continue;
+                    }
+                    else {
+                        PTE("I bot decidono di continuare a giocare!");
+                        cond -= 10;
+                    }
+                }
+            }
+        }
         switch (cond) {
             case 0:
                 message = names[index] + " è in scaccomatto, ";
@@ -115,43 +147,28 @@ int main() {
                 cout << board.printBoard();
                 endgame = true;
                 continue;
-            case 5:
-                if (game == "pc") {
-                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
-                    char draw;
-                    cin >> draw;
-                    if (draw == 'y') {
-                        PTE("La partita termina in patta!");
-                        endgame = true;
-                        continue;
-                    }
-                    else {
-                        PTE("Si continua a giocare!");
-                        goto condition;
-                    }
-                }
-                else {
-                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta?");
-                    int decision = rand()%1000;
-                    if (decision == 1) {
-                        PTE("I bot si accordano per la patta! La partita termina!");
-                        endgame = true;
-                        continue;
-                    }
-                    else {
-                        PTE("I bot decidono di continuare a giocare!");
-                        goto condition;
-                    }
-                }
-                break;
         }
         PTE(message);
         Gamers p = players[index];
         if (types[index] == 'U') {
             PTE("Se vuoi stampare la scacchiera, inserire 'y': ");
-            char code;
+            string code;
             cin >> code;
-            if (code == 'y') cout << board.printBoard();
+            if (code == "y") cout << board.printBoard();
+            else if (code == "patta") {
+                int decision = rand()%5;
+                message = names[(i+1)%2];
+                if (decision == 1) {
+                    message += " accetta la patta!";
+                    PTE(message);
+                    endgame = true;
+                    continue;
+                }
+                else {
+                    message += " non accetta la patta! La partita continua!";
+                    PTE(message);
+                }
+            }
             string start;
             string end;
             bool result;
@@ -185,6 +202,18 @@ int main() {
             }
         }
         else {
+            int drawProposal = rand()%69;
+            if (drawProposal == 1) {
+                message = names[index] + " propone la patta! Vuoi accettare? ";
+                char answer;
+                cin >> answer;
+                if (answer == 'y') {
+                    PTE("Patta accettata!");
+                    endgame = true;
+                    continue;
+                }
+                else PTE("La partita continua!");
+            }
             bool result = p.Move();
             PTE("Mossa effettuata!");
             if (result) {
