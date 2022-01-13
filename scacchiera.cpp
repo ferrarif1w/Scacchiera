@@ -96,6 +96,7 @@ int main() {
                 continue;
             case 1:
                 message += " È sotto scacco!";
+                printTextEffect(message);
                 break;
             case 2:
                 printTextEffect("È stato raggiunto uno stallo! Ecco la scacchiera finale:");
@@ -112,6 +113,30 @@ int main() {
                 cout << board.printBoard();
                 endgame = true;
                 continue;
+            case 5:
+                if (game == "pc") {
+                    printTextEffect("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
+                    char draw;
+                    cin >> draw;
+                    if (draw == 'y') {
+                        printTextEffect("La partita termina in patta!");
+                        endgame = true;
+                        continue;
+                    }
+                }
+                else {
+                    printTextEffect("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta?");
+                    int decision = rand()%1000;
+                    if (decision == 1) {
+                        printTextEffect("I bot si accordano per la patta! La partita termina!");
+                        endgame = true;
+                        continue;
+                    }
+                    else {
+                        printTextEffect("I bot decidono di continuare a giocare!");
+                    }
+                }
+                break;
         }
         printTextEffect(message);
         Gamers p = players[index];

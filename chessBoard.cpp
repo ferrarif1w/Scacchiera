@@ -322,6 +322,13 @@ string ChessBoard::printBoard() {
 //int ChessBoard::getCondition() {return condition;}
 
 int ChessBoard::getCondition(char color) {
+    try {
+        if (positions.at(printBoard()) == 3) {
+            condition = 5;
+            positions.erase(printBoard());
+        }
+    }
+    catch (out_of_range& e) {}
     if (drawMoves >= 50) condition = 4;
     else if (scanCheckmateImpossibility()) condition = 3;
     else nextPlayerMoves = movesAvailable(color);
@@ -405,6 +412,7 @@ bool ChessBoard::performMove(Move move) {
     if (piece->GetName() != 'P' && piece->GetName() != 'p' && name != 1 && name != 2) drawMoves++;
     else drawMoves = 0;
     lastMove = move;
+    positions[printBoard()]++;
     if (logFile != "") updateLog(start, destination);
     if (scanPromotion(piece)) {
         pieceToPromote = piece;

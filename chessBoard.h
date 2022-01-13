@@ -58,10 +58,12 @@ class ChessBoard {
         string logFile;
         Pieces* pieceToPromote;
         /*0 se in scaccomatto, 1 se scacco, 2 se stallo, 3 se patta per mancanza di pezzi,
-        4 se patta per numero di mosse, -1 altrimenti*/
+        4 se patta per numero di mosse, 5 se patta per ripetizione di posizione, -1 altrimenti*/
         int condition = -1;
         /*vettore contenente le mosse disponibili a un giocatore umano*/
         vector<Move> nextPlayerMoves;
+        //mappa che salva le configurazioni apparse e il numero di apparizioni
+        map<string, int> positions;
         //numero di mosse effettuate senza muovere pedoni e catturare pezzi (per patta per numero di mosse)
         int drawMoves;
         const int SIZE = 8;
