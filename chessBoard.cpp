@@ -303,19 +303,20 @@ ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
 
 string ChessBoard::printBoard() {
     string out = "";
-    out += "  ---------------------------------\n";
+    out += "   ┌───┬───┬───┬───┬───┬───┬───┬───┐\n";
     for (int i = 7; i >= 0; i--) {
         out += to_string(i+1);
-        out += " | ";
+        out += "  │ ";
         for (int j = 0; j < 8; j++) {
             if (board[i][j] != nullptr) out += board[i][j]->GetName();
             else out += " ";
-            out += " | ";
+            out += " │ ";
         }
         out += "\n";
-        out += "  ---------------------------------\n";
+        if (i >= 1) out += "   ├───┼───┼───┼───┼───┼───┼───┼───┤\n";
     }
-    out += "    A   B   C   D   E   F   G   H\n\n";
+    out += "   └───┴───┴───┴───┴───┴───┴───┴───┘\n";
+    out += "     A   B   C   D   E   F   G   H\n\n";
     return out;
 }
 

@@ -148,7 +148,6 @@ int main() {
                 endgame = true;
                 continue;
         }
-        PTE(message);
         Gamers p = players[index];
         if (types[index] == 'U') {
             PTE("Se vuoi stampare la scacchiera, inserire 'y': ");
