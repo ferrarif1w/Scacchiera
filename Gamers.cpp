@@ -44,7 +44,7 @@ bool Gamers::Move()
 void Gamers::PerformPromotion()
 {
 
-    char P[4]{'A', 'T', 'C', 'R'};
+    char P[4]{'A', 'T', 'C', 'D'};
 
     int r = rand() % 4;
 
