@@ -124,8 +124,21 @@ bool ChessBoard::scanCheck(Move& move, char color) {
     return result;
 }
 
-bool ChessBoard::scanCheckMate(bool initialCheck, vector<Move>& moves) {
+bool ChessBoard::scanCheckmate(bool initialCheck, vector<Move>& moves) {
     return initialCheck && moves.size() == 0;
+}
+
+bool ChessBoard::scanCheckmateImpossibility() {
+    if (piecesLeftWithoutKings > 2) return false;
+    bool oneHorseLeft = false;
+    if (piecesList[1]) oneHorseLeft = !oneHorseLeft;
+    if (piecesList[17]) oneHorseLeft = !oneHorseLeft;
+    if (oneHorseLeft) return true;
+    //in ordine: alfiere bianco camposcuro, alfiere nero camposcuro, alfiere bianco campochiaro, alfiere nero campochiaro
+    vector<Pieces*> bishops{piecesList[1], piecesList[21], piecesList[5], piecesList[18]};
+    if (piecesLeftWithoutKings == 2 && (bishops[0] && bishops[1] || bishops[2] && bishops[3])) return true;
+    else if (piecesLeftWithoutKings == 1 && (bishops[0] || bishops[1] || bishops[2] || bishops[3])) return true;
+    return false;
 }
 
 bool ChessBoard::enPassantConditions(Pieces* p1, Pieces* p2) {
@@ -153,7 +166,7 @@ bool ChessBoard::castlingConditions(Pieces* king, Pieces* tower) {
     if (scanCheck(color)) return false;
     for (int i = 1; i < abs(start-finish); i++) {
         Move tmp = Move(king, pair(row, start + i*factor), 0);
-        if (scanOccupied(row, start + i*factor) != 0 || scanCheck(tmp, color))
+        if (scanOccupied(row, start + i*factor) != 0 || (i <= 2 && scanCheck(tmp, color)))
             return false;
     }
     return true;
@@ -268,7 +281,7 @@ void ChessBoard::updateLog(char newPiece) {
     write.close();
 }
 
-ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
+ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
     for (int i = 0; i < 8; i++) board.push_back(vector<Pieces*>(8, nullptr));
     //inizializzare file
     initializeRow(0);
@@ -278,7 +291,9 @@ ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
     lastMove = Move();
     pieceToPromote = nullptr;
     logFile = log;
-    if (log != "" && playerBlack != "" && playerWhite != "") {
+    drawMoves = 0;
+    piecesLeftWithoutKings = 30;
+    if (log != "" && playerWhite != "" && playerBlack != "") {
         ofstream write(logFile);
         string playerRow = "B: " + playerWhite + " N: " + playerBlack + "\n";
         write << playerRow;
@@ -288,26 +303,36 @@ ChessBoard::ChessBoard(string log, string playerBlack, string playerWhite) {
 
 string ChessBoard::printBoard() {
     string out = "";
-    out += "  ---------------------------------\n";
+    out += "   ┌───┬───┬───┬───┬───┬───┬───┬───┐\n";
     for (int i = 7; i >= 0; i--) {
         out += to_string(i+1);
-        out += " | ";
+        out += "  │ ";
         for (int j = 0; j < 8; j++) {
             if (board[i][j] != nullptr) out += board[i][j]->GetName();
             else out += " ";
-            out += " | ";
+            out += " │ ";
         }
         out += "\n";
-        out += "  ---------------------------------\n";
+        if (i >= 1) out += "   ├───┼───┼───┼───┼───┼───┼───┼───┤\n";
     }
-    out += "    A   B   C   D   E   F   G   H";
+    out += "   └───┴───┴───┴───┴───┴───┴───┴───┘\n";
+    out += "     A   B   C   D   E   F   G   H\n\n";
     return out;
 }
 
-int ChessBoard::getCondition() {return condition;}
+//int ChessBoard::getCondition() {return condition;}
 
 int ChessBoard::getCondition(char color) {
-    humanPlayerMoves = movesAvailable(color);
+    if (drawMoves >= 50) condition = 4;
+    else if (scanCheckmateImpossibility()) condition = 3;
+    else nextPlayerMoves = movesAvailable(color);
+    try {
+        if (positions.at(printBoard()) == 3) {
+            condition += 10;
+            positions.erase(printBoard());
+        }
+    }
+    catch (out_of_range& e) {}
     return condition;
 }
 
@@ -343,8 +368,8 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
         }
     }
     scanAddSpecialMoves(moves, color);
-    if (scanCheckMate(initialCheck, moves)) condition = 0;
-    else if (scanCheck(color)) condition = 1;
+    if (scanCheckmate(initialCheck, moves)) condition = 0;
+    else if (initialCheck) condition = 1;
     else if (moves.size() == 0) condition = 2;
     else condition = -1;
     return moves;
@@ -355,10 +380,11 @@ bool ChessBoard::performMove(Move move) {
     Pieces* piece = move.piece;
     pair<int, int> start = piece->GetPosition();
     pair<int, int> destination = move.destination;
+    int name = move.moveName;
     piece->SetMove(destination);
     board[destination.first][destination.second] = piece;
     board[start.first][start.second] = nullptr;
-    switch (move.moveName) {
+    switch (name) {
         case 0:
             break;
         case 3: {   //arrocco corto
@@ -381,9 +407,13 @@ bool ChessBoard::performMove(Move move) {
             Pieces* additionalPiece = move.additionalPiece;
             *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
             delete additionalPiece;
+            piecesLeftWithoutKings--;
             break;
     }
+    if (piece->GetName() != 'P' && piece->GetName() != 'p' && name != 1 && name != 2) drawMoves++;
+    else drawMoves = 0;
     lastMove = move;
+    positions[printBoard()]++;
     if (logFile != "") updateLog(start, destination);
     if (scanPromotion(piece)) {
         pieceToPromote = piece;
@@ -392,13 +422,19 @@ bool ChessBoard::performMove(Move move) {
     return false;
 }
 
-bool ChessBoard::performMove(pair<int, int> start, pair<int, int> destination, char color) {
-    if (!(legitMoveInput(start) && legitMoveInput(start))) throw InvalidInputException();
+bool ChessBoard::performMove(pair<int, int>& start, pair<int, int>& destination, char color) {
+    if (!(legitMoveInput(start) && legitMoveInput(destination))) throw InvalidInputException();
     Pieces* piece = board[start.first][start.second];
     Move tmpMove = Move(piece, destination, 0, nullptr);
-    auto result = find(humanPlayerMoves.begin(), humanPlayerMoves.end(), tmpMove);
-    if (result == humanPlayerMoves.end()) throw InvalidMoveException();
+    auto result = find(nextPlayerMoves.begin(), nextPlayerMoves.end(), tmpMove);
+    if (result == nextPlayerMoves.end()) throw InvalidMoveException();
     return performMove(*result);
+}
+
+bool ChessBoard::performMove() {
+    int i = rand() % nextPlayerMoves.size();
+    Move m = nextPlayerMoves[i];
+    return performMove(m);
 }
 
 void ChessBoard::performPromotion(char code) {
@@ -428,7 +464,12 @@ void ChessBoard::performPromotion(char code) {
     if (logFile != "") updateLog(code);
 }
 
+pair<int, int> ChessBoard::getPawnToPromote() {
+    return pieceToPromote->GetPosition();
+}
+
 void ChessBoard::justForDebug(string fileName) {
+    piecesLeftWithoutKings = 0;
     for (int i = 0; i < 32; i++) delete piecesList[i];
     piecesList = vector<Pieces*>(32, nullptr);
     board = vector<vector<Pieces*>>(8, vector<Pieces*>(8, nullptr));
@@ -449,6 +490,7 @@ void ChessBoard::justForDebug(string fileName) {
                     color = 'B';
                 }
                 if (color == 'N') index += 16;
+                piecesLeftWithoutKings++;
                 switch (character) {
                     case 'A':
                         piece = new A(pair(i, j), color);
@@ -474,6 +516,7 @@ void ChessBoard::justForDebug(string fileName) {
                     case 'R':
                         piece = new R(pair(i, j), color);
                         index += 4;
+                        piecesLeftWithoutKings--;
                         break;
                     case 'T':
                         piece = new T(pair(i, j), color);
