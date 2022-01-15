@@ -195,7 +195,8 @@ void ChessBoard::scanAddSpecialMoves(vector<Move>& moves, char color) {
     Move tmp;
     for (int i = 0; i < SIZE; i++) {
         Pieces* pawn = piecesList[8+i+offset];
-        if (!pawn || (pawn->GetName() != 80 && pawn->GetName() != 112)) continue;
+        if (!pawn) continue;
+        if (pawn->GetName() != 80 && pawn->GetName() != 112) continue;
         pair<int, int> pos = pawn->GetPosition();
         if (scanBoundaries(pos.first, pos.second-direction)) {
             Pieces* toTheLeft = board[pos.first][pos.second-direction];
@@ -264,7 +265,7 @@ void ChessBoard::initializeRow(int row) {
     }
 }
 
-void ChessBoard::updateLog(pair<int, int> start, pair<int, int> end) {
+void ChessBoard::updateLogMove(pair<int, int> start, pair<int, int> end) {
     ofstream write;
     write.open(logFile, ofstream::app);
     string out;
@@ -274,10 +275,35 @@ void ChessBoard::updateLog(pair<int, int> start, pair<int, int> end) {
     write.close();
 }
 
-void ChessBoard::updateLog(char newPiece) {
-    ofstream write(logFile);
+void ChessBoard::updateLogPromotion(char newPiece) {
+    ofstream write;
     write.open(logFile, ofstream::app);
     write << "p " << newPiece << "\n";
+    write.close();
+}
+
+void ChessBoard::updateLogCheck() {
+    ofstream write;
+    write.open(logFile, ofstream::app);
+    write << "c";
+    write.close();
+}
+
+void ChessBoard::updateLogVictory(int ending) {
+    ofstream write;
+    write.open(logFile, ofstream::app);
+    write << "END:";
+    int tmp = condition;
+    if (tmp >= 9) tmp -= 10;
+    if (ending == 1) write << tmp;
+    else write << ending;
+    write.close();
+}
+
+void ChessBoard::updateLogGameType(string type) {
+    ofstream write;
+    write.open(logFile, ofstream::app);
+    write << type << "\n";
     write.close();
 }
 
@@ -295,7 +321,7 @@ ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
     piecesLeftWithoutKings = 30;
     if (log != "" && playerWhite != "" && playerBlack != "") {
         ofstream write(logFile);
-        string playerRow = "B: " + playerWhite + " N: " + playerBlack + "\n";
+        string playerRow = "B: " + playerWhite + "\nN: " + playerBlack + "\n\n";
         write << playerRow;
         write.close();
     }
@@ -319,8 +345,6 @@ string ChessBoard::printBoard() {
     out += "     A   B   C   D   E   F   G   H\n\n";
     return out;
 }
-
-//int ChessBoard::getCondition() {return condition;}
 
 int ChessBoard::getCondition(char color) {
     if (drawMoves >= 50) condition = 4;
@@ -369,7 +393,10 @@ vector<ChessBoard::Move> ChessBoard::movesAvailable(char color) {
     }
     scanAddSpecialMoves(moves, color);
     if (scanCheckmate(initialCheck, moves)) condition = 0;
-    else if (initialCheck) condition = 1;
+    else if (initialCheck) {
+        if (logFile != "") updateLogCheck();
+        condition = 1;
+    }
     else if (moves.size() == 0) condition = 2;
     else condition = -1;
     return moves;
@@ -414,7 +441,7 @@ bool ChessBoard::performMove(Move move) {
     else drawMoves = 0;
     lastMove = move;
     positions[printBoard()]++;
-    if (logFile != "") updateLog(start, destination);
+    if (logFile != "") updateLogMove(start, destination);
     if (scanPromotion(piece)) {
         pieceToPromote = piece;
         return true;
@@ -424,6 +451,7 @@ bool ChessBoard::performMove(Move move) {
 
 bool ChessBoard::performMove(pair<int, int>& start, pair<int, int>& destination, char color) {
     if (!(legitMoveInput(start) && legitMoveInput(destination))) throw InvalidInputException();
+    if (color != 0) nextPlayerMoves = movesAvailable(color);
     Pieces* piece = board[start.first][start.second];
     Move tmpMove = Move(piece, destination, 0, nullptr);
     auto result = find(nextPlayerMoves.begin(), nextPlayerMoves.end(), tmpMove);
@@ -461,7 +489,7 @@ void ChessBoard::performPromotion(char code) {
     board[pos.first][pos.second] = newPiece;
     *(find(piecesList.begin(), piecesList.end(), pieceToPromote)) = newPiece;
     delete pieceToPromote;
-    if (logFile != "") updateLog(code);
+    if (logFile != "") updateLogPromotion(code);
 }
 
 pair<int, int> ChessBoard::getPawnToPromote() {

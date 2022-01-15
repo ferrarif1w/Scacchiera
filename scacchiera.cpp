@@ -1,18 +1,17 @@
 #include "chessBoard.h"
 #include "Gamers.h"
+#include "PTE.cpp"
 #include <iostream>
-#include <chrono>
-#include <thread>
+#include <iomanip>
 using namespace std;
 
-//acronimo di printTextEffect
-void PTE(string s, int delayShort = 1, int delayLong = 250) {
-    for (int i = 0; i < s.size(); i++) {
-        this_thread::sleep_for(chrono::milliseconds(delayShort));
-        cout << s[i];
-    }
-    this_thread::sleep_for(chrono::milliseconds(delayLong));
-    cout << endl;
+string CLN() {
+    auto t = time(nullptr);
+    auto tm = *localtime(&t);
+    ostringstream oss;
+    oss << put_time(&tm, "%d-%m-%Y %H.%M.%S");
+    auto date = oss.str();
+    return "logs/log " + date + ".txt";
 }
 
 int main() {
@@ -36,8 +35,11 @@ int main() {
     if (game == "pc" && whiteCode == 0) {
         PTE("Inserisci il nome del giocatore umano: ");
         cin >> names[0];
+        auto tmp = find(botNames.begin(), botNames.end(), names[0]);
+        if (tmp != botNames.end()) botNames.erase(tmp);
         PTE("Giocherai con le pedine bianche!");
-        names[1] = botNames[rand() % 10];
+        PTE("Se vuoi chiedere la patta, inserisci 'patta' quando ti viene chiesto se vuoi stampare la scacchiera!");
+        names[1] = botNames[rand() % botNames.size()];
         PTE("Il bot si chiama " + names[1] + " e giocherà con le pedine nere.");
         types.push_back(U);
         types.push_back(B);
@@ -45,16 +47,20 @@ int main() {
     else if (game == "pc" && whiteCode == 1) {
         PTE("Inserisci il nome del giocatore umano: ");
         cin >> names[1];
+        auto tmp = find(botNames.begin(), botNames.end(), names[0]);
+        if (tmp != botNames.end()) botNames.erase(tmp);
         PTE("Giocherai con le pedine nere!");
-        PTE("Se vuoi chiedere la patta, inserisci 'patta' quando ti chiede se vuoi stampare la scacchiera!");
-        names[0] = botNames[rand() % 10];
+        PTE("Se vuoi chiedere la patta, inserisci 'patta' quando ti viene chiesto se vuoi stampare la scacchiera!");
+        names[0] = botNames[rand() % botNames.size()];
         PTE("Il bot si chiama " + names[0] + " e giocherà con le pedine bianche.");
         types.push_back(B);
         types.push_back(U);
     }
     else if (game == "cc") {
-        names[0] = botNames[rand() % 10];
-        names[1] = botNames[rand() % 10];
+        int nameIndex = rand() % 10;
+        names[0] = botNames[nameIndex];
+        botNames.erase(botNames.begin()+nameIndex);
+        names[1] = botNames[rand() % 9];
         PTE("Il bot che giocherà con le pedine bianche si chiama " + names[0] + ".");
         PTE("Il bot che giocherà con le pedine nere si chiama " + names[1] + ".");
         types.push_back(B);
@@ -64,7 +70,7 @@ int main() {
         PTE("Input non valido, riprovare; si può inserire solo:");
         goto insertGame;
     }
-    ChessBoard board = ChessBoard("log.txt", names[0], names[1]);
+    ChessBoard board = ChessBoard(CLN(), names[0], names[1]);
     players.push_back(Gamers('B', &board, names[0], types[0]));
     players.push_back(Gamers('N', &board, names[1], types[1]));
     PTE("Vuoi partire con una scacchiera personalizzata? ");
@@ -77,19 +83,23 @@ int main() {
     }
     int i = 0;
     int movesThreshold;
-    if (game == "cc") movesThreshold = 50;
+    if (game == "cc") movesThreshold = 150;
     else movesThreshold = -1;
-    int index;
     bool endgame = false;
+    int ending = 0;
     while (i != movesThreshold && !endgame) {
+        /*if (game == "cc") {
+            cout << board.printBoard();
+            this_thread::sleep_for(chrono::seconds(2));
+        }*/
         int index = i%2;
         string message = "Turno di " + names[index] + " con le pedine ";
         if (index == 0) message += "bianche!";
         else message += "nere!";
         int cond = players[index].GetCondition();
+        int drawDecision = rand()%5;
         if (cond >= 9) {
-            cond -= 10;
-            if (cond != 0) {
+            if (cond-10 != 0) {
                 if (game == "pc") {
                     PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
                     char draw;
@@ -97,6 +107,7 @@ int main() {
                     if (draw == 'y') {
                         PTE("La partita termina in patta!");
                         endgame = true;
+                        ending = 5;
                         continue;
                     }
                     else {
@@ -105,11 +116,12 @@ int main() {
                     }
                 }
                 else {
-                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta?");
+                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta!");
                     int decision = rand()%1000;
                     if (decision == 1) {
                         PTE("I bot si accordano per la patta! La partita termina!");
                         endgame = true;
+                        ending = 5;
                         continue;
                     }
                     else {
@@ -121,16 +133,11 @@ int main() {
         }
         switch (cond) {
             case 0:
-                message = names[index] + " è in scaccomatto, ";
-                if (index == 0) message += names[1];
-                else message += names[0];
-                message += " vince!";
-                PTE(message);
+                PTE(names[index] + " è in scaccomatto, " + names[(i+1)%2] + " vince!");
                 endgame = true;
                 continue;
             case 1:
                 message += " È sotto scacco!";
-                PTE(message);
                 break;
             case 2:
                 PTE("È stato raggiunto uno stallo! Ecco la scacchiera finale:");
@@ -148,6 +155,7 @@ int main() {
                 endgame = true;
                 continue;
         }
+        PTE(message);
         Gamers p = players[index];
         if (types[index] == 'U') {
             PTE("Se vuoi stampare la scacchiera, inserire 'y': ");
@@ -155,17 +163,14 @@ int main() {
             cin >> code;
             if (code == "y") cout << board.printBoard();
             else if (code == "patta") {
-                int decision = rand()%5;
-                message = names[(i+1)%2];
-                if (decision == 1) {
-                    message += " accetta la patta!";
-                    PTE(message);
+                if (drawDecision == 1) {
+                    PTE(names[(i+1)%2] + " accetta la patta! La partita termina!");
+                    ending = 7;
                     endgame = true;
                     continue;
                 }
                 else {
-                    message += " non accetta la patta! La partita continua!";
-                    PTE(message);
+                    PTE(names[(i+1)%2] + " non accetta la patta! La partita continua!");
                 }
             }
             string start;
@@ -201,17 +206,34 @@ int main() {
             }
         }
         else {
-            int drawProposal = rand()%69;
+            int drawProposal = rand()%169;
             if (drawProposal == 1) {
-                message = names[index] + " propone la patta! Vuoi accettare? ";
-                char answer;
-                cin >> answer;
-                if (answer == 'y') {
-                    PTE("Patta accettata!");
-                    endgame = true;
-                    continue;
+                message = names[index] + " propone la patta!";
+                if (game == "pc") {
+                    message += "  Vuoi accettare? ";
+                    PTE(message);
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y') {
+                        PTE("Patta accettata! La partita termina!");
+                        endgame = true;
+                        ending = 7;
+                        continue;
+                    }
+                    else PTE("La partita continua!");
                 }
-                else PTE("La partita continua!");
+                else {
+                    PTE(message, 1 , 250);
+                    if (drawDecision == 5) {
+                        PTE(names[(i+1)%2] + " accetta la patta! La partita termina!", 1, 250);
+                        endgame = true;
+                        ending = 7;
+                        continue;
+                    }
+                    else {
+                        PTE(names[(i+1)%2] + " non accetta la patta! La partita continua!", 1, 250);
+                    }
+                }
             }
             bool result = p.Move();
             PTE("Mossa effettuata!");
@@ -221,7 +243,7 @@ int main() {
                 message = "Promozione effettuata: il pedone in ";
                 message += pos.second + 65;
                 message += pos.first + 49;
-                message += " con ";
+                message += " diventa ";
                 switch (newPiece) {
                     case 'A':
                         message += " un alfiere!";
@@ -240,7 +262,11 @@ int main() {
         }
         i++;
     }
-    if (game == "cc" && i == movesThreshold) 
-        PTE("La partita termina in patta! È stata effettuata la 50esima mossa totale!");
+    //aggiorna log con informazioni su vittoria
+    if (game == "cc" && i == movesThreshold) {
+        PTE("La partita termina in patta! È stata effettuata la " + to_string(movesThreshold) + "esima mossa totale!");
+        ending = 6;
+    }
+    board.updateLogVictory(ending);
     PTE("Grazie per aver giocato!"); 
 }
