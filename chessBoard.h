@@ -63,7 +63,8 @@ class ChessBoard {
         vector<vector<Pieces*>> board;
         //prima pezzi bianchi (pedoni per ultimi), poi pezzi neri (pedoni per ultimi)
         vector<Pieces*> piecesList;
-        int piecesLeftWithoutKings;
+        //acronimo di piecesLeftWithoutKings
+        int PLWK;
         Move lastMove;
         string logFile;
         Pieces* pieceToPromote;

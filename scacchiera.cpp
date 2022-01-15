@@ -101,7 +101,7 @@ int main() {
         if (index == 0) message += "bianche!";
         else message += "nere!";
         int cond = players[index].GetCondition();
-        int drawDecision = rand()%5;
+        int drawDecision = rand()%20;
         if (cond >= 9) {
             if (cond-10 != 0) {
                 if (game == "pc") {
@@ -229,7 +229,7 @@ int main() {
                 }
                 else {
                     PTE(message, 1 , 250);
-                    if (drawDecision == 5) {
+                    if (drawDecision == 1) {
                         PTE(names[(i+1)%2] + " accetta la patta! La partita termina!", 1, 250);
                         endgame = true;
                         ending = 7;

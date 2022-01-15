@@ -129,8 +129,8 @@ bool ChessBoard::scanCheckmate(bool initialCheck, vector<Move>& moves) {
 }
 
 bool ChessBoard::scanCheckmateImpossibility() {
-    if (piecesLeftWithoutKings > 2) return false;
-    if (piecesLeftWithoutKings == 0) return true;
+    if (PLWK > 2) return false;
+    if (PLWK == 0) return true;
     int horsesNumber = 0;
     vector<int> horsesIndexes{1, 6, 17, 22};
     for (int i : horsesIndexes) {
@@ -142,11 +142,11 @@ bool ChessBoard::scanCheckmateImpossibility() {
         if (tmpB && tmpB->GetName() == 'c') horsesNumber++;
         if (tmpN && tmpN->GetName() == 'C') horsesNumber++;
     }
-    if (horsesNumber > 1) return false;
-    int WLSBN; //alfieri bianchi campochiaro
-    int BLSBN; //alfieri neri campochiaro
-    int WDSBN; //alfieri bianchi camposcuro
-    int BDSBN; //alfieri neri camposcuro
+    if (horsesNumber == 1 && PLWK == 1) return true;
+    int WLSBN = 0; //alfieri bianchi campochiaro
+    int BLSBN = 0; //alfieri neri campochiaro
+    int WDSBN = 0; //alfieri bianchi camposcuro
+    int BDSBN = 0; //alfieri neri camposcuro
     if (piecesList[2]) WDSBN++;
     if (piecesList[5]) WLSBN++;
     if (piecesList[18]) BLSBN++;
@@ -163,8 +163,8 @@ bool ChessBoard::scanCheckmateImpossibility() {
             else BLSBN++;
         }
     }
-    if (BDSBN + BLSBN + WDSBN + WLSBN == 1) return true;
-    if (WLSBN == 1 && BLSBN == 1 || WDSBN == 1 && BDSBN == 1) return true;
+    if (BDSBN + BLSBN + WDSBN + WLSBN == 1 && PLWK == 1) return true;
+    if ((WLSBN == 1 && BLSBN == 1 || WDSBN == 1 && BDSBN == 1) && PLWK == 2) return true;
     return false;
 }
 
@@ -345,7 +345,7 @@ ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
     pieceToPromote = nullptr;
     logFile = log;
     drawMoves = 0;
-    piecesLeftWithoutKings = 30;
+    PLWK = 30;
     if (log != "" && playerWhite != "" && playerBlack != "") {
         ofstream write(logFile);
         string playerRow = "B: " + playerWhite + "\nN: " + playerBlack + "\n\n";
@@ -461,7 +461,7 @@ bool ChessBoard::performMove(Move move) {
             Pieces* additionalPiece = move.additionalPiece;
             *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
             delete additionalPiece;
-            piecesLeftWithoutKings--;
+            PLWK--;
             break;
     }
     if (piece->GetName() != 'P' && piece->GetName() != 'p' && name != 1 && name != 2) drawMoves++;
@@ -524,7 +524,7 @@ pair<int, int> ChessBoard::getPawnToPromote() {
 }
 
 void ChessBoard::justForDebug(string fileName) {
-    piecesLeftWithoutKings = 0;
+    PLWK = 0;
     for (int i = 0; i < 32; i++) delete piecesList[i];
     piecesList = vector<Pieces*>(32, nullptr);
     board = vector<vector<Pieces*>>(8, vector<Pieces*>(8, nullptr));
@@ -545,14 +545,14 @@ void ChessBoard::justForDebug(string fileName) {
                     color = 'B';
                 }
                 if (color == 'N') index += 16;
-                piecesLeftWithoutKings++;
+                PLWK++;
                 switch (character) {
                     case 'A':
                         piece = new A(pair(i, j), color);
                         //alfiere campochiaro
                         if (abs(i-j)%2 == 1) index += (color == 'N') ? 2 : 5;
                         // alfiere camposcuro
-                        else if (abs(i-j)%2 == 1) index += (color == 'N') ? 5 : 2;
+                        else if (abs(i-j)%2 == 0) index += (color == 'N') ? 5 : 2;
                         else index = -1;
                         break;
                     case 'C':
@@ -573,7 +573,7 @@ void ChessBoard::justForDebug(string fileName) {
                     case 'R':
                         piece = new R(pair(i, j), color);
                         index += 4;
-                        piecesLeftWithoutKings--;
+                        PLWK--;
                         break;
                     case 'T':
                         piece = new T(pair(i, j), color);
