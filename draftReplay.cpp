@@ -123,8 +123,8 @@ int main() {
             char startColumn = scannerLine[1];
             char endRow = scannerLine[3];
             char endColumn = scannerLine[4];
-            pair<int,int> start = pair(startRow-'0', startColumn-'0');
-            pair<int,int> end = pair(endRow-'0', endColumn-'0');
+            pair<int,int> start = pair<int,int>(startRow-'0', startColumn-'0');
+            pair<int, int> end = pair<int, int>(endRow - '0', endColumn - '0');
             string startString;
             startString.push_back(static_cast<char>(startColumn + 17));
             startString.push_back(static_cast<char>(startRow + 1));
