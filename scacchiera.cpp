@@ -154,11 +154,11 @@ int main() {
                 cout << board.printBoard();
                 endgame = true;
                 continue;
-            case 4:
+            /*case 4:
                 PTE("La partita termina in patta! Sono state eseguite 50 mosse senza spostare pedoni o mangiare pezzi! Ecco la scacchiera finale:");
                 cout << board.printBoard();
                 endgame = true;
-                continue;
+                continue;*/
         }
         PTE(message);
         Gamers p = players[index];
