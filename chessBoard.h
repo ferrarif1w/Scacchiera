@@ -38,7 +38,7 @@ class ChessBoard {
         bool performMove();
         //metodo per giocatore: fornire posizioni
         //ritorna true se è possibile promozione, false altrimenti
-        bool performMove(pair<int, int>& start, pair<int, int>& destination, char color);
+        bool performMove(pair<int, int>& start, pair<int, int>& destination, char color = 0);
         void performPromotion(char newPiece);
         string printBoard();
         int getCondition(char color);

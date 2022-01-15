@@ -297,10 +297,6 @@ void ChessBoard::updateLogVictory(int ending) {
     if (tmp >= 9) tmp -= 10;
     if (ending == 1) write << tmp;
     else write << ending;
-    if (condition == 0) {
-        char winner = lastMove.piece->GetColor();
-        write << winner;
-    }
     write.close();
 }
 
@@ -325,7 +321,7 @@ ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
     piecesLeftWithoutKings = 30;
     if (log != "" && playerWhite != "" && playerBlack != "") {
         ofstream write(logFile);
-        string playerRow = "B: " + playerWhite + " N: " + playerBlack + "\n";
+        string playerRow = "B: " + playerWhite + "\nN: " + playerBlack + "\n\n";
         write << playerRow;
         write.close();
     }
@@ -455,6 +451,7 @@ bool ChessBoard::performMove(Move move) {
 
 bool ChessBoard::performMove(pair<int, int>& start, pair<int, int>& destination, char color) {
     if (!(legitMoveInput(start) && legitMoveInput(destination))) throw InvalidInputException();
+    if (color != 0) nextPlayerMoves = movesAvailable(color);
     Pieces* piece = board[start.first][start.second];
     Move tmpMove = Move(piece, destination, 0, nullptr);
     auto result = find(nextPlayerMoves.begin(), nextPlayerMoves.end(), tmpMove);

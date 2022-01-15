@@ -20,7 +20,7 @@ bool Gamers::Move(string start, string end)
     pair<int, int> s = pair(sFirst, sSecond);
     pair<int, int> f = pair(fFirst, fSecond);
 
-return chessBoard->performMove(s, f, Color);
+return chessBoard->performMove(s, f);
 }
 
 int Gamers::GetCondition()
