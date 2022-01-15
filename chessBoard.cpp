@@ -319,11 +319,7 @@ void ChessBoard::updateLogCheck() {
 void ChessBoard::updateLogVictory(int ending) {
     ofstream write;
     write.open(logFile, ofstream::app);
-    write << "END:";
-    int tmp = condition;
-    if (tmp >= 9) tmp -= 10;
-    if (ending == 1) write << tmp;
-    else write << ending;
+    write << "END:" << ending;
     write.close();
 }
 

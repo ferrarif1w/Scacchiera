@@ -90,7 +90,7 @@ int main() {
     if (game == "cc") movesThreshold = 150;
     else movesThreshold = -1;
     bool endgame = false;
-    int ending = 0;
+    int cond = 0;
     while (/*i != movesThreshold && */!endgame) {
         /*if (game == "cc") {
             cout << board.printBoard();
@@ -100,7 +100,7 @@ int main() {
         string message = "Turno di " + names[index] + " con le pedine ";
         if (index == 0) message += "bianche!";
         else message += "nere!";
-        int cond = players[index].GetCondition();
+        cond = players[index].GetCondition();
         int drawDecision = rand()%20;
         if (cond >= 9) {
             if (cond-10 != 0) {
@@ -111,7 +111,7 @@ int main() {
                     if (draw == 'y') {
                         PTE("La partita termina in patta!");
                         endgame = true;
-                        ending = 5;
+                        cond = 5;
                         continue;
                     }
                     else {
@@ -125,7 +125,7 @@ int main() {
                     if (decision == 1) {
                         PTE("I bot si accordano per la patta! La partita termina!");
                         endgame = true;
-                        ending = 5;
+                        cond = 5;
                         continue;
                     }
                     else {
@@ -170,7 +170,7 @@ int main() {
             else if (code == "patta") {
                 if (drawDecision == 1) {
                     PTE(names[(i+1)%2] + " accetta la patta! La partita termina!");
-                    ending = 7;
+                    cond = 7;
                     endgame = true;
                     continue;
                 }
@@ -222,7 +222,7 @@ int main() {
                     if (answer == 'y') {
                         PTE("Patta accettata! La partita termina!");
                         endgame = true;
-                        ending = 7;
+                        cond = 7;
                         continue;
                     }
                     else PTE("La partita continua!");
@@ -232,7 +232,7 @@ int main() {
                     if (drawDecision == 1) {
                         PTE(names[(i+1)%2] + " accetta la patta! La partita termina!", 1, 250);
                         endgame = true;
-                        ending = 7;
+                        cond = 7;
                         continue;
                     }
                     else {
@@ -270,8 +270,8 @@ int main() {
     //aggiorna log con informazioni su vittoria
     if (game == "cc" && i == movesThreshold) {
         PTE("La partita termina in patta! È stata effettuata la " + to_string(movesThreshold) + "esima mossa totale!");
-        ending = 6;
+        cond = 6;
     }
-    board.updateLogVictory(ending);
+    board.updateLogVictory(cond);
     PTE("Grazie per aver giocato!"); 
 }
