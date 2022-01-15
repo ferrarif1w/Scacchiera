@@ -87,7 +87,7 @@ int main() {
     else movesThreshold = -1;
     bool endgame = false;
     int ending = 0;
-    while (i != movesThreshold && !endgame) {
+    while (/*i != movesThreshold && */!endgame) {
         /*if (game == "cc") {
             cout << board.printBoard();
             this_thread::sleep_for(chrono::seconds(2));
@@ -133,7 +133,8 @@ int main() {
         }
         switch (cond) {
             case 0:
-                PTE(names[index] + " è in scaccomatto, " + names[(i+1)%2] + " vince!");
+                PTE(names[index] + " è in scaccomatto, " + names[(i+1)%2] + " vince! Ecco la scacchiera finale:");
+                cout << board.printBoard();
                 endgame = true;
                 continue;
             case 1:
