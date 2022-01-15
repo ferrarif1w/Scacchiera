@@ -54,6 +54,9 @@ int main() {
     ChessBoard board = ChessBoard();
     while (getline(scanner, scannerLine)) {
         color = (i%2 == 0) ? 'B' : 'N';
+        /*if (i == 325) {
+            cout << "pipo" << endl;
+        }*/
         string message;
         bool pb = true;
         if (i == -1) {
@@ -141,7 +144,7 @@ int main() {
             PTE(message);
             if (pb) {
                 cout << board.printBoard();
-                this_thread::sleep_for(chrono::seconds(3));
+                //this_thread::sleep_for(chrono::seconds(3));
             }
         }
         else {
