@@ -1,4 +1,0 @@
-B: Shaldon
-N: Kasparov
-
-END:0

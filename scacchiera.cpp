@@ -2,16 +2,17 @@
 #include "Gamers.h"
 #include "PTE.cpp"
 #include <iostream>
-#include <iomanip>
 using namespace std;
 
 string CLN() {
-    auto t = time(nullptr);
-    auto tm = *localtime(&t);
-    ostringstream oss;
-    oss << put_time(&tm, "%d-%m-%Y %H.%M.%S");
-    auto date = oss.str();
-    return "logs/log " + date + ".txt";
+    int i = -1;
+    ifstream scanner;
+    string name;
+    do {
+        name = "logs/log" + to_string(++i) + ".txt";
+        scanner.open(name);
+    } while (scanner.good());
+    return name;
 }
 
 int main() {

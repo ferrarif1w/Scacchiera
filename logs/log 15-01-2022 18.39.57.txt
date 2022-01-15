@@ -1,4 +1,0 @@
-B: Turing
-N: Shaldon
-
-END:0

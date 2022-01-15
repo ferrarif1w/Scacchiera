@@ -374,8 +374,8 @@ string ChessBoard::printBoard() {
 }
 
 int ChessBoard::getCondition(char color) {
-    if (drawMoves >= 50) condition = 4;
-    else if (scanCheckmateImpossibility()) condition = 3;
+    if (scanCheckmateImpossibility()) condition = 3;
+    else if (drawMoves >= 50) condition = 4;
     else nextPlayerMoves = movesAvailable(color);
     try {
         if (positions.at(printBoard()) == 3) {

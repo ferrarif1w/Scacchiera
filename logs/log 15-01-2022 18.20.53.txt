@@ -1,4 +1,0 @@
-B: Morphy
-N: Marius
-
-END:0
