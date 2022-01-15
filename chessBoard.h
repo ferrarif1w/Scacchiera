@@ -44,9 +44,8 @@ class ChessBoard {
         int getCondition(char color);
         pair<int, int> getPawnToPromote();
         //aggiorna log con informazioni su vittoria
-        //se ending=0, stampato in file condition: 0 se in scaccomatto, 2 se stallo,
-        //3 se patta per mancanza di pezzi, 4 se patta per numero di mosse,
-        //5 se patta per ripetizione di posizione,
+        //0 se in scaccomatto, 2 se stallo, 3 se patta per mancanza di pezzi,
+        //4 se patta per numero di mosse, 5 se patta per ripetizione di posizione,
         //6 se patta per raggiungimento limite mosse in partita tra bot,
         //7 se patta per accordo
         void updateLogVictory(int ending);
