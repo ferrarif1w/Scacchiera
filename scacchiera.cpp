@@ -7,11 +7,14 @@ using namespace std;
 string CLN() {
     int i = -1;
     ifstream scanner;
+    scanner.open("blank.txt");
     string name;
-    do {
+    while (true) {
         name = "logs/log" + to_string(++i) + ".txt";
+        scanner.close();
         scanner.open(name);
-    } while (scanner.good());
+        if (!scanner.good()) break;
+    }
     return name;
 }
 
