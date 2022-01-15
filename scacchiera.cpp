@@ -2,6 +2,7 @@
 #include "Gamers.h"
 #include "PTE.cpp"
 #include <iostream>
+#include <sstream>
 #include <iomanip>
 using namespace std;
 
