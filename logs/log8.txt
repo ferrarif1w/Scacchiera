@@ -1,4 +1,0 @@
-B: Polgar
-N: Gallo
-
-END:0

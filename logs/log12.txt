@@ -1,3 +1,0 @@
-B: Morphy
-N: Kasparov
-

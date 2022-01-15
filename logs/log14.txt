@@ -1,4 +1,0 @@
-B: Pippo
-N: Turing
-
-END:0
