@@ -49,7 +49,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove()
     std::vector<std::pair<int, int> > m1;
     while (position.first + i < 8 && position.second + i < 8)
         {
-            m1.push_back(std::pair(position.first + i, position.second + i));
+            m1.push_back(std::pair<int, int>(position.first + i, position.second + i));
             i++;
         }
     Moves.push_back(m1);
@@ -58,7 +58,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove()
     std::vector<std::pair<int, int> > m2;
     while (position.first + i < 8 && position.second - i >= 0)
     {
-        m2.push_back(std::pair(position.first + i, position.second - i));
+        m2.push_back(std::pair<int, int>(position.first + i, position.second - i));
         i++;
     }
     Moves.push_back(m2);
@@ -67,7 +67,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove()
     std::vector<std::pair<int, int> > m3;
     while (position.first - i >= 0 && position.second + i < 8)
     {
-        m3.push_back(std::pair(position.first - i, position.second + i));
+        m3.push_back(std::pair<int, int>(position.first - i, position.second + i));
         i++;
     }
     Moves.push_back(m3);
@@ -76,7 +76,7 @@ std::vector<std::vector<std::pair<int, int> >> A::Pmove()
     std::vector<std::pair<int, int> > m4;
     while (position.first - i >= 0 && position.second - i >= 0)
     {
-        m4.push_back(std::pair(position.first - i, position.second - i));
+        m4.push_back(std::pair<int, int>(position.first - i, position.second - i));
         i++;
     }
     Moves.push_back(m4);
@@ -95,14 +95,14 @@ std::vector<std::vector<std::pair<int, int> >> C::Pmove()
 {
     std::vector<std::vector<std::pair<int, int> >> Moves;
     std::vector<std::pair<int, int> > tmp;
-    tmp.push_back(std::pair(position.first + 2, position.second + 1));
-    tmp.push_back(std::pair(position.first + 2, position.second - 1));
-    tmp.push_back(std::pair(position.first - 2, position.second + 1));
-    tmp.push_back(std::pair(position.first - 2, position.second - 1));
-    tmp.push_back(std::pair(position.first + 1, position.second + 2));
-    tmp.push_back(std::pair(position.first - 1, position.second + 2));
-    tmp.push_back(std::pair(position.first + 1, position.second - 2));
-    tmp.push_back(std::pair(position.first - 1, position.second - 2));
+    tmp.push_back(std::pair<int, int>(position.first + 2, position.second + 1));
+    tmp.push_back(std::pair<int, int>(position.first + 2, position.second - 1));
+    tmp.push_back(std::pair<int, int>(position.first - 2, position.second + 1));
+    tmp.push_back(std::pair<int, int>(position.first - 2, position.second - 1));
+    tmp.push_back(std::pair<int, int>(position.first + 1, position.second + 2));
+    tmp.push_back(std::pair<int, int>(position.first - 1, position.second + 2));
+    tmp.push_back(std::pair<int, int>(position.first + 1, position.second - 2));
+    tmp.push_back(std::pair<int, int>(position.first - 1, position.second - 2));
 
     Moves.push_back(tmp);
     return Moves;
@@ -122,7 +122,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m1;
     while (position.first + i < 8 && position.second + i < 8) 
     {
-        m1.push_back(std::pair(position.first + i, position.second + i));
+        m1.push_back(std::pair<int, int>(position.first + i, position.second + i));
         i++;
     }
     Moves.push_back(m1);
@@ -131,7 +131,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m2;
     while (position.first + i < 8 && position.second - i >= 0) 
     {
-        m2.push_back(std::pair(position.first + i, position.second - i));
+        m2.push_back(std::pair<int, int>(position.first + i, position.second - i));
         i++;
     }
     Moves.push_back(m2);
@@ -140,7 +140,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m3;
     while (position.first - i >= 0 && position.second + i >= 0) 
     {
-        m3.push_back(std::pair(position.first - i, position.second + i));
+        m3.push_back(std::pair<int, int>(position.first - i, position.second + i));
         i++;
     }
     Moves.push_back(m3);
@@ -149,7 +149,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m4;
     while (position.first - i >= 0 && position.second - i >= 0) 
     {
-        m4.push_back(std::pair(position.first - i, position.second - i));
+        m4.push_back(std::pair<int, int>(position.first - i, position.second - i));
         i++;
     }
     Moves.push_back(m4);
@@ -160,7 +160,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m5;
     while (position.first + i < 8)
     {
-        m5.push_back(std::pair(position.first + i, position.second));
+        m5.push_back(std::pair<int, int>(position.first + i, position.second));
         i++;
     }
     Moves.push_back(m5);
@@ -169,7 +169,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m6;
     while (position.first - i >= 0)
     {
-        m6.push_back(std::pair(position.first - i, position.second));
+        m6.push_back(std::pair<int, int>(position.first - i, position.second));
         i++;
     }
     Moves.push_back(m6);
@@ -178,7 +178,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m7;
     while (position.second + i < 8)
     {
-        m7.push_back(std::pair(position.first, position.second + i));
+        m7.push_back(std::pair<int, int>(position.first, position.second + i));
         i++;
     }
     Moves.push_back(m7);
@@ -187,7 +187,7 @@ std::vector<std::vector<std::pair<int, int> >> D::Pmove()
     std::vector<std::pair<int, int> > m8;
     while (position.second - i >= 0)
     {
-        m8.push_back(std::pair(position.first, position.second - i));
+        m8.push_back(std::pair<int, int>(position.first, position.second - i));
         i++;
     }
     Moves.push_back(m8);
@@ -213,10 +213,10 @@ std::vector<std::vector<std::pair<int, int> >> P::Pmove()
     if(Color == 'N')
         Col = -1;
 
-    tmp.push_back(std::pair(position.first + Col, position.second));
+    tmp.push_back(std::pair<int, int>(position.first + Col, position.second));
 
     if(Moved == 0)
-        tmp.push_back(std::pair(position.first + (2*Col), position.second));
+        tmp.push_back(std::pair<int, int>(position.first + (2*Col), position.second));
 
     Moves.push_back(tmp);
 
@@ -234,17 +234,17 @@ std::vector<std::vector<std::pair<int, int> >> R::Pmove()
     std::vector<std::vector<std::pair<int, int> >> Moves;
     std::vector<std::pair<int, int> > tmp;
 
-    tmp.push_back(std::pair(position.first + 1, position.second));
-    tmp.push_back(std::pair(position.first - 1, position.second));
-    tmp.push_back(std::pair(position.first, position.second + 1));
-    tmp.push_back(std::pair(position.first, position.second - 1));
+    tmp.push_back(std::pair<int, int>(position.first + 1, position.second));
+    tmp.push_back(std::pair<int, int>(position.first - 1, position.second));
+    tmp.push_back(std::pair<int, int>(position.first, position.second + 1));
+    tmp.push_back(std::pair<int, int>(position.first, position.second - 1));
 
     //---
 
-    tmp.push_back(std::pair(position.first + 1, position.second + 1));
-    tmp.push_back(std::pair(position.first - 1, position.second - 1));
-    tmp.push_back(std::pair(position.first + 1, position.second - 1));
-    tmp.push_back(std::pair(position.first - 1, position.second + 1));
+    tmp.push_back(std::pair<int, int>(position.first + 1, position.second + 1));
+    tmp.push_back(std::pair<int, int>(position.first - 1, position.second - 1));
+    tmp.push_back(std::pair<int, int>(position.first + 1, position.second - 1));
+    tmp.push_back(std::pair<int, int>(position.first - 1, position.second + 1));
 
     Moves.push_back(tmp);
 
@@ -265,7 +265,7 @@ std::vector<std::vector<std::pair<int, int> >> T::Pmove()
     std::vector<std::pair<int, int> > m1;
     while (position.first + i < 8)
     {
-        m1.push_back(std::pair(position.first + i, position.second));
+        m1.push_back(std::pair<int, int>(position.first + i, position.second));
         i++;
     }
     Moves.push_back(m1);
@@ -274,7 +274,7 @@ std::vector<std::vector<std::pair<int, int> >> T::Pmove()
     std::vector<std::pair<int, int> > m2;
     while (position.first - i >= 0)
     {
-        m2.push_back(std::pair(position.first - i, position.second));
+        m2.push_back(std::pair<int, int>(position.first - i, position.second));
         i++;
     }
     Moves.push_back(m2);
@@ -283,7 +283,7 @@ std::vector<std::vector<std::pair<int, int> >> T::Pmove()
     std::vector<std::pair<int, int> > m3;
     while (position.second + i < 8)
     {
-        m3.push_back(std::pair(position.first, position.second + i));
+        m3.push_back(std::pair<int, int>(position.first, position.second + i));
         i++;
     }
     Moves.push_back(m3);
@@ -292,7 +292,7 @@ std::vector<std::vector<std::pair<int, int> >> T::Pmove()
     std::vector<std::pair<int, int> > m4;
     while (position.second - i >= 0)
     {
-        m4.push_back(std::pair(position.first, position.second - i));
+        m4.push_back(std::pair<int, int>(position.first, position.second - i));
         i++;
     }
     Moves.push_back(m4);

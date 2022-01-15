@@ -106,20 +106,18 @@ class ChessBoard {
         //aggiorna log con scacco
         void updateLogCheck();
         //mappa utilizzata in scanCheck
-        map<pair<int, int>, string> directionsPieces {
-            {pair(1,1), "PRAD"},
-            {pair(1,0), "RDT"},
-            {pair(1,-1), "PRAD"},
-            {pair(0,-1), "RDT"},
-            {pair(-1,-1), "PRAD"},
-            {pair(-1,0), "RDT"},
-            {pair(-1,1), "PRAD"},
-            {pair(0,1), "RDT"}
-        };
+        map<pair<int, int>, string> directionsPieces{
+            {pair<int, int>(1, 1), "PRAD"},
+            {pair<int, int>(1, 0), "RDT"},
+            {pair<int, int>(1, -1), "PRAD"},
+            {pair<int, int>(0, -1), "RDT"},
+            {pair<int, int>(-1, -1), "PRAD"},
+            {pair<int, int>(-1, 0), "RDT"},
+            {pair<int, int>(-1, 1), "PRAD"},
+            {pair<int, int>(0, 1), "RDT"}};
         //vettore utilizzato in scanCheck
-        vector<pair<int, int>> directionsHorse {
-            pair(1,2), pair(2,1), pair(2,-1), pair(1,-2), pair(-1,-2), pair(-2,-1), pair(-2,1), pair(-1,2)
-        };
+        vector<pair<int, int>> directionsHorse{
+            pair<int, int>(1, 2), pair<int, int>(2, 1), pair<int, int>(2, -1), pair<int, int>(1, -2), pair<int, int>(-1, -2), pair<int, int>(-2, -1), pair<int, int>(-2, 1), pair<int, int>(-1, 2)};
 };
 //operatore di confronto per Move
 //controlla se pezzo e posizione di arrivo sono uguali
