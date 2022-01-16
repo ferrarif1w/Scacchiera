@@ -457,6 +457,10 @@ bool ChessBoard::performMove(Move move) {
         default:    //mossa normale con cattura, en passant
             Pieces* additionalPiece = move.additionalPiece;
             *(find(piecesList.begin(), piecesList.end(), additionalPiece)) = nullptr;
+            if (name == 2) {
+                pair<int, int> pawnPos = additionalPiece->GetPosition();
+                board[pawnPos.first][pawnPos.second] = nullptr;
+            }
             delete additionalPiece;
             PLWK--;
             break;
