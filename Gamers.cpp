@@ -31,7 +31,9 @@ int Gamers::GetCondition()
 
 void Gamers::PerformPromotion(char code)
 {
-    chessBoard->performPromotion(code);
+    char c = code;
+    if (c > 90) c -= 32;
+    chessBoard->performPromotion(c);
 }
 
 //Bot

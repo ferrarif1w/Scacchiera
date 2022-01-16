@@ -1,6 +1,9 @@
 Impostazione del log:
-- prima riga: "B: " + nome giocatore con bianco + " N: " + nome giocatore con nero
-- lista di mosse, espresse con casella di partenza e di arrivo (una riga per mossa)
-- file finisce con scritta "end: " + B/N + " wins"
-- se dopo mossa avviene promozione, 
-    carattere "p" + a capo, carattere che identifica nuovo pezzo a fine riga
+- prima riga: B: [nome giocatore con bianco]
+- seconda riga: "N: [nome giocatore con nero]
+- terza riga: vuota
+- ogni riga fino all'ultima:
+    - mossa normale: [riga di partenza][colonna di partenza] [riga di arrivo][colonna di arrivo]
+        (numerate 0-7)
+    - promozione: p [carattere che identifica nuovo pezzo]
+- ultima riga: END: [numero che identifica finale]

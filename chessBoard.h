@@ -67,8 +67,8 @@ class ChessBoard {
         string logFile;
         Pieces* pieceToPromote;
         //0 se in scaccomatto, 1 se scacco, 2 se stallo, 3 se patta per mancanza di pezzi,
-        //4 se patta per numero di mosse, -1 altrimenti; incrementata di 10 se possibile patta
-        //per ripetizioni di posizione
+        //4 se patta per numero di mosse, 5 se possibile patta per ripetizioni di posizione,
+        //-1 altrimenti
         int condition = -1;
         //vettore contenente le mosse disponibili a un giocatore umano
         vector<Move> nextPlayerMoves;

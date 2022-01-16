@@ -7,5 +7,6 @@ test2.cpp
 test.txt
 test2.exe
 scacchiera.exe
-draftReplay.exe
 logs/
+replays/
+draftReplay.exe

@@ -18,6 +18,10 @@ string CLN() {
     return name;
 }
 
+bool randomDecision(int probability) {
+    return (rand()%probability == 1) ? 1 : 0;
+}
+
 int main() {
     const char B = 66;
     const char U = 85;
@@ -77,6 +81,7 @@ int main() {
     ChessBoard board = ChessBoard(CLN(), names[0], names[1]);
     players.push_back(Gamers('B', &board, names[0], types[0]));
     players.push_back(Gamers('N', &board, names[1], types[1]));
+    //TOGLIERE ALLA FINE DI TUTTO DA QUI
     PTE("Vuoi partire con una scacchiera personalizzata? ");
     char te;
     cin >> te;
@@ -85,13 +90,19 @@ int main() {
         PTE("Ecco la nuova scacchiera!");
         cout << board.printBoard();
     }
+    //TOGLIERE ALLA FINE DI TUTTO FINO A QUI
     int i = 0;
-    int movesThreshold;
+    int index;
+    string message;
+    int movesThreshold = (game == "cc") ? 150 : -1;
     if (game == "cc") movesThreshold = 150;
     else movesThreshold = -1;
     bool endgame = false;
     int cond = 0;
-    while (/*i != movesThreshold && */!endgame) {
+    constexpr int BDPP = 169; //prob. che bot proponga patta all'avversario (1/valore)
+    constexpr int BDAP = 20; //prob. che bot accetti patta proposta dall'avversario (1/valore)
+    constexpr int BRDD = 1000; //prob. che bot dichiari patta per ripetizioni di posizione (1/valore)
+    while (/*i < movesThreshold && */!endgame) {
         /*if (game == "cc") {
             cout << board.printBoard();
             this_thread::sleep_for(chrono::seconds(2));
@@ -101,40 +112,6 @@ int main() {
         if (index == 0) message += "bianche!";
         else message += "nere!";
         cond = players[index].GetCondition();
-        int drawDecision = rand()%20;
-        if (cond >= 9) {
-            if (cond-10 != 0) {
-                if (game == "pc") {
-                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! Vuoi dichiarare patta? ");
-                    char draw;
-                    cin >> draw;
-                    if (draw == 'y') {
-                        PTE("La partita termina in patta!");
-                        endgame = true;
-                        cond = 5;
-                        continue;
-                    }
-                    else {
-                        PTE("Si continua a giocare!");
-                        cond -= 10;
-                    }
-                }
-                else {
-                    PTE("La configurazione attuale della scacchiera è comparsa per la terza volta! I bot possono accordarsi per la patta!");
-                    int decision = rand()%1000;
-                    if (decision == 1) {
-                        PTE("I bot si accordano per la patta! La partita termina!");
-                        endgame = true;
-                        cond = 5;
-                        continue;
-                    }
-                    else {
-                        PTE("I bot decidono di continuare a giocare!");
-                        cond -= 10;
-                    }
-                }
-            }
-        }
         switch (cond) {
             case 0:
                 PTE(names[index] + " è in scaccomatto, " + names[(i+1)%2] + " vince! Ecco la scacchiera finale:");
@@ -159,6 +136,35 @@ int main() {
                 cout << board.printBoard();
                 endgame = true;
                 continue;*/
+            case 5:
+                if (game == "pc") {
+                    message = "La configurazione attuale della scacchiera è comparsa per la terza volta! ";
+                    message += names[whiteCode] + ", vuoi dichiarare patta?";
+                    PTE(message);
+                    char draw;
+                    cin >> draw;
+                    if (draw == 'y') {
+                        PTE("La partita termina in patta!");
+                        endgame = true;
+                    }
+                    else {
+                        PTE("Si continua a giocare!");
+                    }
+                    continue;
+                }
+                else {
+                    message = "La configurazione attuale della scacchiera è comparsa per la terza volta! ";
+                    message += names[index] + " può dichiarare patta!";
+                    PTE(message);
+                    if (randomDecision(BRDD)) {
+                        PTE(names[index] + " dichiara patta! La partita termina!");
+                        endgame = true;
+                    }
+                    else {
+                        PTE(names[index] + " decide di continuare a giocare!");
+                    }
+                    continue;
+                }
         }
         PTE(message);
         Gamers p = players[index];
@@ -168,7 +174,7 @@ int main() {
             cin >> code;
             if (code == "y") cout << board.printBoard();
             else if (code == "patta") {
-                if (drawDecision == 1) {
+                if (randomDecision(BDAP)) {
                     PTE(names[(i+1)%2] + " accetta la patta! La partita termina!");
                     cond = 7;
                     endgame = true;
@@ -190,7 +196,7 @@ int main() {
                 goto insertMove;
             }
             catch (ChessBoard::InvalidInputException e) {
-                PTE("L'input inserito non è valido");
+                PTE("L'input inserito non è valido.");
                 goto insertMove;
             }
             if (result) {
@@ -211,8 +217,7 @@ int main() {
             }
         }
         else {
-            int drawProposal = rand()%169;
-            if (drawProposal == 1) {
+            if (randomDecision(BDPP)) {
                 message = names[index] + " propone la patta!";
                 if (game == "pc") {
                     message += "  Vuoi accettare? ";
@@ -228,8 +233,8 @@ int main() {
                     else PTE("La partita continua!");
                 }
                 else {
-                    PTE(message, 1 , 250);
-                    if (drawDecision == 1) {
+                    PTE(message, 1, 250);
+                    if (randomDecision(BDAP)) {
                         PTE(names[(i+1)%2] + " accetta la patta! La partita termina!", 1, 250);
                         endgame = true;
                         cond = 7;

@@ -207,12 +207,13 @@ void ChessBoard::scanAddSpecialMoves(vector<Move>& moves, char color) {
     Pieces* firstTower = piecesList[0+offset];
     Pieces* secondTower = piecesList[7+offset];
     Pieces* king = piecesList[4+offset];
+    int row = (color == 'B') ? 0 : 7;
     //arrocco lungo
     if (castlingConditions(king, firstTower))
-        moves.push_back(Move(king, pair<int, int>(0,2), 4, firstTower));
+        moves.push_back(Move(king, pair<int, int>(row,2), 4, firstTower));
     //arrocco corto
     if (castlingConditions(king, secondTower))
-        moves.push_back(Move(king, pair<int, int>(0,6), 3, secondTower));
+        moves.push_back(Move(king, pair<int, int>(row,6), 3, secondTower));
 
     //en passant + controllare se pedoni hanno pedine da mangiare in diagonale
     //per essere valido, un pedone bianco dev'essere nella riga 5, un pedone nero nella riga 4
@@ -338,6 +339,7 @@ ChessBoard::ChessBoard(string log, string playerWhite, string playerBlack) {
     initializeRow(7);
     initializeRow(6);
     lastMove = Move();
+    nextPlayerMoves.push_back(Move());
     pieceToPromote = nullptr;
     logFile = log;
     drawMoves = 0;
@@ -370,17 +372,19 @@ string ChessBoard::printBoard() {
 }
 
 int ChessBoard::getCondition(char color) {
-    if (scanCheckmateImpossibility()) condition = 3;
-    else if (drawMoves >= 50) condition = 4;
-    //in versione finale, rimettere else
-    nextPlayerMoves = movesAvailable(color);
-    try {
-        if (positions.at(printBoard()) == 3) {
-            condition += 10;
-            positions.erase(printBoard());
+    Pieces* tmp = nextPlayerMoves[0].piece;
+    if (condition == -1 || condition == 1) nextPlayerMoves = movesAvailable(color);
+    if (condition != 0 && condition != 2) {
+        try {
+            if (scanCheckmateImpossibility()) condition = 3;
+            //else if (drawMoves >= 50) condition = 4;
+            else if (positions.at(printBoard()) == 3) {
+                condition = 5;
+                positions.erase(printBoard());
+            }
         }
+        catch (out_of_range& e) {}
     }
-    catch (out_of_range& e) {}
     return condition;
 }
 
@@ -467,6 +471,7 @@ bool ChessBoard::performMove(Move move) {
     }
     if (piece->GetName() != 'P' && piece->GetName() != 'p' && name != 1 && name != 2) drawMoves++;
     else drawMoves = 0;
+    condition = -1;
     lastMove = move;
     positions[printBoard()]++;
     if (logFile != "") updateLogMove(start, destination);
