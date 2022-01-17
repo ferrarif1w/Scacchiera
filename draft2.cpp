@@ -1,13 +1,12 @@
 #include "chessBoard.h"
 #include "PTE.cpp"
-#include <regex>
 using namespace std;
 
 int main(int argc, char** args) {
     char op = *args[1];
     string logFile (args[2]);
     string replayFile;
-    if (argc >= 4) replayFile = args[3] ;
+    if (argc >= 4) replayFile = args[3];
     //se il nome del file non contiene l'estensione, viene aggiunta
     if (logFile.substr(logFile.size()-4) != ".txt") logFile += ".txt";
     ifstream scanner (logFile);
