@@ -34,7 +34,7 @@ int main(int argc, char** args) {
     //se viene effettuato replay su file, viene aperto oggetto per scrivere su file
     ofstream replayWrite;
     if (op == 'f') {
-        if (replayFile.size() < 4 || replayFile.substr(replayFile.size()-4) != ".txt") replayFile += ".txt";
+        if (replayFile.size() < 5 || replayFile.substr(replayFile.size()-4) != ".txt") replayFile += ".txt";
         replayWrite.open(replayFile);
     }
     ChessBoard board = ChessBoard();
