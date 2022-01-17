@@ -3,12 +3,32 @@
 using namespace std;
 
 int main(int argc, char** args) {
+    if (argc <= 2) {
+        PTE("Non sono stati inseriti gli argomenti necessari; rieseguire il programma.");
+        return 0;
+    }
     char op = *args[1];
+    if (!(op == 'v' || op == 'f')) {
+        PTE("Gli argomenti inseriti non sono validi; rieseguire il programma.");
+        return 0;
+    }
+    if (op == 'f' && argc == 3) {
+        PTE("Gli argomenti inseriti non sono sufficienti per il replay su file; rieseguire il programma.");
+        return 0;
+    }
+    if (op == 'v' && argc > 3) {
+        PTE("Sono stati inseriti troppi argomenti per il replay a video; rieseguire il programma.");
+        return 0;
+    }
+    if (op == 'f' && argc > 4) {
+        PTE("Sono stati inseriti troppi argomenti per il replay su file; rieseguire il programma.");
+        return 0;
+    }
     string logFile (args[2]);
     string replayFile;
     if (argc >= 4) replayFile = args[3];
     //se il nome del file non contiene l'estensione, viene aggiunta
-    if (logFile.substr(logFile.size()-4) != ".txt") logFile += ".txt";
+    if (logFile.size() < 5 || logFile.substr(logFile.size()-4) != ".txt") logFile += ".txt";
     ifstream scanner (logFile);
     //controlla se file di log inserito esiste
     if (!scanner.good()) {
