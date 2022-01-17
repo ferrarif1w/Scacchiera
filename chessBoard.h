@@ -16,7 +16,9 @@ class ChessBoard {
     public:
         //pezzo, destinazione, codice della mossa, eventuale pezzo aggiuntivo
         struct Move {
+            //pezzo mosso
             Pieces* piece;
+            //posizione di arrivo
             pair<int, int> destination;
             //0: mossa normale, 1: mossa normale con cattura,
             //2: en passant, 3: arrocco corto, 4: arrocco lungo
@@ -24,11 +26,12 @@ class ChessBoard {
             //pezzo cattuarto   se moveName = 1,2
             //torre mossa       se moveName = 3,4
             Pieces* additionalPiece;
+            //costruttori
             Move(Pieces* p, pair<int, int> dest, int name, Pieces* add);
             Move();
         };
         ChessBoard(string log = "", string playerWhite = "", string playerBlack = "");
-        //ritorna vettore con tutte le mosse possibili
+        //ritorna vettore con tutte le mosse possibili per giocatore con color
         vector<Move> movesAvailable(char color);
         //metodo generale
         //ritorna true se è possibile promozione, false altrimenti
@@ -39,9 +42,16 @@ class ChessBoard {
         //metodo per giocatore: fornire posizioni
         //ritorna true se è possibile promozione, false altrimenti
         bool performMove(pair<int, int>& start, pair<int, int>& destination, char color = 0);
+        //effettua promozione di pedone salvato in pieceToPromote con pezzo indicato da newPiece
         void performPromotion(char newPiece);
+        //stampa scacchiera
         string printBoard();
+        //ritorna numero che rappresenta situazione in cui si trova giocatore con color:
+        //0 se in scaccomatto, 1 se scacco, 2 se stallo, 3 se patta per mancanza di pezzi,
+        //4 se patta per numero di mosse, 5 se possibile patta per ripetizioni di posizione,
+        //-1 altrimenti
         int getCondition(char color);
+        //restituisce posizione di pedone che può essere promosso (usato da bot)
         pair<int, int> getPawnToPromote();
         //aggiorna log con informazioni su vittoria
         //0 se in scaccomatto, 2 se stallo, 3 se patta per mancanza di pezzi,
@@ -54,7 +64,9 @@ class ChessBoard {
         //TOGLIERLA ALLA FINE DI TUTTO
         //importa board da file
         void justForDebug(string fileName);
+        //eccezione: input non valido
         class InvalidInputException {};
+        //eccezione: mossa non valida
         class InvalidMoveException {};
     private:
         //ogni vettore rappresenta una riga
@@ -63,19 +75,21 @@ class ChessBoard {
         vector<Pieces*> piecesList;
         //acronimo di piecesLeftWithoutKings
         int PLWK;
+        //ultima mossa effettuata
         Move lastMove;
+        //nome del file su cui effettuare il log
         string logFile;
+        //pedone che può essere promossa
         Pieces* pieceToPromote;
-        //0 se in scaccomatto, 1 se scacco, 2 se stallo, 3 se patta per mancanza di pezzi,
-        //4 se patta per numero di mosse, 5 se possibile patta per ripetizioni di posizione,
-        //-1 altrimenti
+        //salva la condizione di giocatore attuale
         int condition = -1;
-        //vettore contenente le mosse disponibili a un giocatore umano
+        //vettore contenente le mosse disponibili al giocatore attuale
         vector<Move> nextPlayerMoves;
-        //mappa che salva le configurazioni apparse e il numero di apparizioni
+        //mappa che salva le configurazioni apparse e il numero di apparizioni di ciascuna
         map<string, int> positions;
         //numero di mosse effettuate senza muovere pedoni e catturare pezzi (per patta per numero di mosse)
         int drawMoves;
+        //numero di righe e colonne della scacchiera
         const int SIZE = 8;
         bool legitMoveInput(pair<int, int>& x);
         bool scanBoundaries(pair<int, int>& pos);

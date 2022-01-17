@@ -62,6 +62,9 @@ int main() {
         color = (i%2 == 0) ? 'B' : 'N';
         string message;
         bool pb = true;
+        if (movesNumber == 25) {
+            cout << "pipo" << endl;
+        }
         //terza riga: riga vuota, nessuna mossa
         if (i == -1) {
             pb = false;
@@ -130,6 +133,9 @@ int main() {
         //mossa regolare: c[riga di partenza][colonna di partenza] [riga di arrivo][colonna di arrivo]
         //(numerate 0-7) (c presente se giocatore corrente è sotto scacco)
         else {
+            string startString;
+            string endString;
+            try{
             bool check = false;
             //controlla se è presente scacco
             if (scannerLine[0] == 'c') {
@@ -145,10 +151,8 @@ int main() {
             pair<int, int> start = pair<int,int>(startRow-'0', startColumn-'0');
             pair<int, int> end = pair<int, int>(endRow - '0', endColumn - '0');
             //crea stringhe che rappresentano posizioni
-            string startString;
             startString.push_back(static_cast<char>(startColumn + 17));
             startString.push_back(static_cast<char>(startRow + 1));
-            string endString;
             endString.push_back(static_cast<char>(endColumn + 17));
             endString.push_back(static_cast<char>(endRow + 1));
             message = "Turno di " + ((color == 'B') ? playerWhite : playerBlack);
@@ -158,6 +162,10 @@ int main() {
             if (board.performMove(start,end,color)) promotionPos = endString;
             //incrementa numero di mosse effettuate
             movesNumber++;
+            }
+            catch (ChessBoard::InvalidMoveException& e) {
+                cout << "Mossa " << movesNumber << ": " << startString << " " << endString << endl;
+            }
         }
         i++;
         //se replay a video, stampa messaggio costruito e scacchiera attuale a video

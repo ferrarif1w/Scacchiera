@@ -1,20 +1,25 @@
 #include "chessBoard.h"
 using namespace std;
 
+//costruttore di Move
 ChessBoard::Move::Move(Pieces* p, pair<int, int> dest, int name, Pieces* add = nullptr) : 
 piece {p}, destination {dest}, moveName {name}, additionalPiece {add} {}
 
+//costruttore di defualt di Move
 ChessBoard::Move::Move() : piece {nullptr}, destination {pair<int, int>(-1, -1)}, moveName{-1}, 
 additionalPiece {nullptr} {}
 
+//overloading dell'operatore == per Move: confronta pezzo e destinazione
 bool operator==(const ChessBoard::Move& m1, const ChessBoard::Move& m2) {
     return (m1.piece == m2.piece && m1.destination == m2.destination);
 }
 
+//controlla se input della mossa è valido
 bool ChessBoard::legitMoveInput(pair<int, int>& x) {
     return (x.first >= 0 && x.first < 8 && x.second >= 0 && x.second < 8);
 }
 
+//controlla se posizione inserita è all'interno della scacchiera
 bool ChessBoard::scanBoundaries(pair<int, int>& pos) {
     return (pos.first >= 0 && pos.first < SIZE && pos.second >= 0 && pos.second < SIZE);
 }
@@ -377,7 +382,7 @@ int ChessBoard::getCondition(char color) {
     if (condition != 0 && condition != 2) {
         try {
             if (scanCheckmateImpossibility()) condition = 3;
-            //else if (drawMoves >= 50) condition = 4;
+            else if (drawMoves >= 50) condition = 4;
             else if (positions.at(printBoard()) == 3) {
                 condition = 5;
                 positions.erase(printBoard());
