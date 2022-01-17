@@ -3,7 +3,7 @@ Impostazione del log:
 - seconda riga: "N: [nome giocatore con nero]
 - terza riga: vuota
 - ogni riga fino all'ultima:
-    - mossa normale: [riga di partenza][colonna di partenza] [riga di arrivo][colonna di arrivo]
-        (numerate 0-7)
+    - mossa normale: c[riga di partenza][colonna di partenza] [riga di arrivo][colonna di arrivo]
+        (numerate 0-7) (c presente se giocatore corrente è sotto scacco)
     - promozione: p [carattere che identifica nuovo pezzo]
 - ultima riga: END: [numero che identifica finale]

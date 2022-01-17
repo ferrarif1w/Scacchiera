@@ -95,8 +95,6 @@ int main() {
     int index;
     string message;
     int movesThreshold = (game == "cc") ? 150 : -1;
-    if (game == "cc") movesThreshold = 150;
-    else movesThreshold = -1;
     bool endgame = false;
     int cond = 0;
     constexpr int BDPP = 169; //prob. che bot proponga patta all'avversario (1/valore)
