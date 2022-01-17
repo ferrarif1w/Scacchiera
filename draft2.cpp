@@ -9,7 +9,7 @@ int main(int argc, char** args) {
     }
     char op = *args[1];
     if (!(op == 'v' || op == 'f')) {
-        PTE("Gli argomenti inseriti non sono validi; rieseguire il programma.");
+        PTE("Il codice per l'operazione inserito non è valido; rieseguire il programma.");
         return 0;
     }
     if (op == 'f' && argc == 3) {
