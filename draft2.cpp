@@ -30,11 +30,11 @@ int main(int argc, char** args) {
     string playerBlack = scannerLine.substr(3);
     int i = -1;
     char color;
-    string promotionPos;
+    string promotionPos; 
     //se viene effettuato replay su file, viene aperto oggetto per scrivere su file
     ofstream replayWrite;
     if (op == 'f') {
-        if (replayFile.substr(replayFile.size()-4) != ".txt") replayFile += ".txt";
+        if (replayFile.size() < 4 || replayFile.substr(replayFile.size()-4) != ".txt") replayFile += ".txt";
         replayWrite.open(replayFile);
     }
     ChessBoard board = ChessBoard();
